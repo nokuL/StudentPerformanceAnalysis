@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>Student</p>
+<h1>{{ user.username }}</h1>
+<a href="{% url 'classroom:student_update' pk=user.pk  %}" class="btn btn-light" role="button">Edit</a>
+</body>
+</html>

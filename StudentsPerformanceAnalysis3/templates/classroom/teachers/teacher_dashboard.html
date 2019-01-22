@@ -1,0 +1,89 @@
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Django School{% endblock %}</title>
+    <link rel="icon" href="{% static 'img/favicon.png' %}">
+     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Clicker+Script" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/fontello-2f186091/css/fontello.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+  </head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">
+    <img src="{% static 'img/favicon.png' %}"width="30" height="30" alt="">
+  </a>
+  <a class="navbar-brand" href="{% url 'home' %}">Django Schools</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+         <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+       </form>
+    </ul>
+      <ul class="nav navbar-nav navbar-right">
+         <li class="">
+              <a href="{% url 'logout' %}">
+                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp;Logout
+             </a>
+         </li>
+      </ul>
+
+  </div>
+</nav>
+<div>
+    <div class="row">
+
+    </div>
+    <div class="row">
+
+    </div>
+</div>
+{% comment %} <div class="control-group">
+     <div class="controls">
+         <a href="{% url 'add_student' %}"><button type="button" class="btn btn-primary">Add Student</button></a>
+     </div>
+  <br>
+ </div>{% endcomment %}
+<div class="panel panel-primary">
+    <div class="panel-heading"><b>STUDENTS LIST</b></div>
+    <div class="panel-body">
+        {% for student in object_list %}
+    <div class="table-responsive">
+  <table class="table table-striped">
+      <thead>
+      <tr>
+      <th></th>
+      <th>FIRST NAME</th>
+      <th>MIDDLE NAME</th>
+      <th>SURNAME</th>
+      <th>CONTACT</th>
+      </tr>
+      </thead>
+      <tbody>
+       <tr>
+           <td>{{ student.firstName }}</td>
+           <td>{{ student.secondName }}</td>
+           <td>{{ student.surname }}</td>
+           <td>{{ student.age }}</td>
+            <td>{{ student.studentPhoneNumber }}</td>
+           <td><a href="{% url 'student_detail'  student.id %}"> <button type="button" class="btn btn-primary btn-md">VIEW</button></a></td>
+       </tr>
+      </tbody>
+  </table>
+             {% endfor %}
+ </div>
+    </div>
+
+</div>
+</body>
+</html>
