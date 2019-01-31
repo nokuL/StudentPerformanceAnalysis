@@ -72,3 +72,6 @@ footer a {
 .navbar-brand {
   font-family: 'Clicker Script', cursive;
 }
+.img {
+  border-radius: 50%;
+}

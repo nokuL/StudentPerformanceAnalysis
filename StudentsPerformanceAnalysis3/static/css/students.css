@@ -1,3 +1,7 @@
 body {
   background-color: #c2d4d8;
 }
+.tabs{
+   font-size: 20px;
+}
+.nav-tabs li a {font-size:82px;}

@@ -1,12 +1,90 @@
-<!DOCTYPE html>
+{% load staticfiles %}
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Django School{% endblock %}</title>
+    <link rel="icon" href="{% static 'img/favicon.png' %}">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+     {% comment %}<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">{% endcomment %}
+    <link href="https://fonts.googleapis.com/css?family=Clicker+Script" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/fontello-2f186091/css/fontello.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+<style type="text/css">
+  .nav-tabs li a {font-size:22px;}
+</style>
+  </head>
 <body>
-<p>Student</p>
-<h1>{{ user.username }}</h1>
-<a href="{% url 'classroom:student_update' pk=user.pk  %}" class="btn btn-light" role="button">Edit</a>
+<br>
+<br>
+<br>
+<div >
+<div class="row">
+    <div class="col-md-1">
+
+    </div>
+    <div class="col-md-3">
+        {% if student.gender == 'Male' %}
+       <img src="{% static 'img/boy2.png' %}" class="rounded" alt="profile_picture" width="200" height="200" >
+            {% elif 'Female' %}
+       <img src="{% static 'img/girl2.png' %}" class="rounded" alt="profile_picture" width="200" height="200" >
+            {% else %}
+        <img src="{% static 'img/user.jpg' %}" class="rounded" alt="profile_picture" width="200" height="200" >
+        {% endif %}
+      <table class="table table-striped">
+          <thead>
+          <tr>
+              <td></td>
+              <td></td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+              <td><b>First Name</b></td>
+              <td>{{ student.first_name }}</td>
+          </tr>
+          <tr>
+              <td><b>Middle Name</b></td>
+             <td>{{ student.second_name }}</td>
+          </tr>
+          <tr>
+              <td><b>Last Name</b></td>
+              <td>{{ student.last_name }}</td>
+          </tr>
+          <tr>
+              <td><b>Gender</b></td>
+              <td>{{ student.gender }}</td>
+          </tr>
+          <tr>
+              <td><b>Age</b></td>
+              <td>{{ student.age }}</td>
+          </tr>
+          <tr>
+              <td><b>Date of Birth</b></td>
+              <td>{{ student.date_of_birth }}</td>
+          </tr>
+          <tr>
+              <td><b>Email</b></td>
+              <td>{{ student.email }}</td>
+          </tr>
+
+
+          </tbody>
+      </table>
+    </div>
+    <div class="col-md-7 col-md-offset-1" >
+      <ul class="nav nav-tabs " >
+        <li><a href="#" data-toggle="tab" >Profile</a></li>
+        <li><a href="#" data-toggle="tab">Attendance</a></li>
+        <li><a href="#" data-toggle="tab">Exam</a></li>
+        <li><a href="#" data-toggle="tab">Career Options</a></li>
+        <li><a href="#" data-toggle="tab">Personality Details</a> </li>
+   </ul>
+    </div>
+</div>
+</div>
 </body>
 </html>

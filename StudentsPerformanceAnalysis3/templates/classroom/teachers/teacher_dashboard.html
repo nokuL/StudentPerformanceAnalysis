@@ -57,7 +57,6 @@
 <div class="panel panel-primary">
     <div class="panel-heading"><b>STUDENTS LIST</b></div>
     <div class="panel-body">
-        {% for student in object_list %}
     <div class="table-responsive">
   <table class="table table-striped">
       <thead>
@@ -70,17 +69,21 @@
       </tr>
       </thead>
       <tbody>
+       {% for student in students %}
        <tr>
-           <td>{{ student.firstName }}</td>
-           <td>{{ student.secondName }}</td>
-           <td>{{ student.surname }}</td>
+           <td></td>
+           <td>{{ student.first_name }}</td>
+           <td></td>
+           <td>{{ student.second_name }}</td>
+           <td></td>
+           <td>{{ student.last_name }}</td>
            <td>{{ student.age }}</td>
             <td>{{ student.studentPhoneNumber }}</td>
-           <td><a href="{% url 'student_detail'  student.id %}"> <button type="button" class="btn btn-primary btn-md">VIEW</button></a></td>
+           <td><a href="{% url 'students:student_detail'  student.pk %}"> <button type="button" class="btn btn-primary btn-md">VIEW</button></a></td>
        </tr>
+            {% endfor %}
       </tbody>
   </table>
-             {% endfor %}
  </div>
     </div>
 

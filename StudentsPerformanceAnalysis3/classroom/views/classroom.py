@@ -11,5 +11,5 @@ def home(request):
         if request.user.is_teacher:
             return redirect('teachers:teacher_dashboard')
         else:
-            return redirect('students:student_detail', pk=request.user.pk)
+            return redirect('students:student_detail', pk=request.user.pk,)
     return render(request, 'classroom/home.html')

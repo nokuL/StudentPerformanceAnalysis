@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+ <a href="{% url 'classroom:record_test_result' %}" class="btn btn-primary" role="button">RECORD TEST_RESULT</a>
+    <br>
+    <br>
+    <div class="container">
+     <table class="table table-striped">
+       <thead>
+        <tr>
+            <td>
+                Subject
+            </td>
+            <td>
+                Test
+            </td>
+            <td>
+                Mark
+            </td>
+            <td>
+                Total
+            </td>
+            <td>
+
+            </td>
+            <td>
+
+            </td>
+        </tr>
+       </thead>
+         <tbody>
+          {% for test_result in test_results %}
+            <tr>
+             <td>
+                {{ test_result.test.subject.subject_title }}
+             </td>
+             <td>
+                 {{ test_result.test.test_title }}
+             </td>
+            <td>
+                {{ test_result.test_score }}
+            </td>
+            <td>
+                {{ test_result.test.total_score }}
+            </td>
+            <td>
+              <a href="{% url 'classroom:edit_test_result' pk=test_result.pk %}" class="btn btn-success" role="button">Edit</a>
+            </td>
+            <td>
+               <a href="{% url 'classroom:delete' pk=test_result.pk %}" class="btn btn-danger" role="button">Delete</a>
+            </td>
+            </tr>
+
+          {% endfor%}
+         </tbody>
+     </table>
+    </div>
+{% endblock %}

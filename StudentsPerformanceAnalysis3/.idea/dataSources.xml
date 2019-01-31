@@ -10,5 +10,23 @@
         <property name="enable_load_extension" value="true" />
       </driver-properties>
     </data-source>
+    <data-source source="LOCAL" name="db [2]" uuid="cc633f0c-c7b2-461d-aaf7-b05812dd26cd">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\DELL\Desktop\Work station\Projects\git\StudentPerformanceAnalysis\StudentsPerformanceAnalysis3\db.sqlite3</jdbc-url>
+      <driver-properties>
+        <property name="enable_load_extension" value="true" />
+      </driver-properties>
+    </data-source>
+    <data-source source="LOCAL" name="StudentPerformanceAnalysis" uuid="bd3cd1d8-0397-4313-a736-7552b173e808">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\DELL\Desktop\Work station\Projects\git\StudentPerformanceAnalysis\StudentsPerformanceAnalysis3\db.sqlite3</jdbc-url>
+      <driver-properties>
+        <property name="enable_load_extension" value="true" />
+      </driver-properties>
+    </data-source>
   </component>
 </project>

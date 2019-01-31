@@ -6,5 +6,18 @@
       <auth-required>false</auth-required>
       <introspection-schemas>*:</introspection-schemas>
     </data-source>
+    <data-source name="db [2]" uuid="cc633f0c-c7b2-461d-aaf7-b05812dd26cd">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" family="SQLITE" exact-version="0.0" />
+      <auth-required>false</auth-required>
+      <introspection-schemas>*:</introspection-schemas>
+    </data-source>
+    <data-source name="StudentPerformanceAnalysis" uuid="bd3cd1d8-0397-4313-a736-7552b173e808">
+      <database-info product="SQLite" version="3.25.1" jdbc-version="2.1" driver-name="SQLite JDBC" driver-version="3.25.1" family="SQLITE" exact-version="3.25.1">
+        <identifier-quote-string>&quot;</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
+      <auth-required>false</auth-required>
+      <introspection-schemas>*:</introspection-schemas>
+    </data-source>
   </component>
 </project>
