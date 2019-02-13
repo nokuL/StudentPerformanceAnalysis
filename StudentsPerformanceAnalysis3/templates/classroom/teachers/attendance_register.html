@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+     <table class="table table-striped table-bordered" id="studentList" style="width:100%">
+              <thead>
+              <tr><td><b>First Name</b></td><td><b>Middle Name</b></td><td><b>Last Name</b></td><td></td><td></td><td></td></tr>
+              </thead>
+              <tbody>
+                 {% for attendance_record in attendance_records_list %}
+                  <tr>
+                      <td>{{ attendance_record.student.first_name }}</td>
+                      <td>{{ attendance_record.student.second_name }}</td>
+                      <td>{{ attendance_record.student.last_name }}</td>
+                      <td>{{ attendance_record.day.day_title }}</td>
+                     <td> <form method="get" action="{% url "classroom:set_attendance_status" pk=attendance_record.pk%}" id="presentForm">
+                         {% csrf_token %}
+                          <input type="submit" class="btn btn-success" value="Present" name="present_btn">
+                     </form></td>
+                       <td> <form method="get" action="{% url "classroom:set_absent" pk=attendance_record.pk%}" id="absentForm">
+                         {% csrf_token %}
+                          <input type="submit" class="btn btn-danger" value="Absent" name="absent_btn">
+                     </form></td>
+                   </tr>
+                 {% endfor %}
+
+              </tbody>
+          <tfoot></tfoot>
+          </table>
+    <br>
+     <td> <form method="get" action="{% url "classroom:save_records" pk=day.pk%}" id="saveForm">
+          {% csrf_token %}
+          <input type="submit" class="btn btn-student btn-block" value="Save" name="save_btn">
+         </form>
+     </td>
+    <script type="text/javascript">
+      $(document).on('submit', '#presentForm', function (e) {
+          e.preventDefault();
+
+          $.ajax({
+              type:'POST',
+              url:$(this).attr('action'),
+              success: function () {
+               alert('Student Present')
+
+              },
+              data:''
+          },)
+      });
+
+      $(document).on('submit', '#absentForm', function (e) {
+          e.preventDefault();
+
+          $.ajax({
+              type:'POST',
+              url:$(this).attr('action'),
+              success: function () {
+               alert('Student Absent')
+
+              },
+              data:''
+          },)
+      });
+       $(document).on('submit', '#saveForm', function (e) {
+
+          $.ajax({
+              type:'POST',
+              url:$(this).attr('action'),
+              success: function () {
+               alert('Attendance Record saved')
+
+              },
+              data:''
+          },)
+      });
+
+
+    </script>
+{% endblock %}
+
+
+

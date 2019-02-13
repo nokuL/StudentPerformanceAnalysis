@@ -16,5 +16,10 @@ urlpatterns = [
 
     path('teachers/', include(([
         path('', teachers.TeacherDashboard.as_view(), name='teacher_dashboard'),
+        path('attendanceRegister/<int:pk>', teachers.Attendance.as_view(), name='attendance'),
+        path('setAttendanceStatus/<int:pk>', teachers.Attendance.set_attendance_status, name='set_attendance_status'),
+        path('setAbsent/<int:pk>', teachers.Attendance.set_absent, name='set_absent'),
+        path('saveAttendanceRecord/<int:pk>', teachers.Attendance.save_records, name='save_records'),
+        path('attendanceDay', teachers.AttendanceDays.as_view(), name='attendance_days'),
     ], 'classroom'), namespace='teachers')),
 ]

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<ul class="list-group">
+{% for day in days %}
+    <a href="{% url 'classroom:attendance' pk=day.pk %}">
+    {% if day.checked == True %}
+  <li class="list-group-item justify-content-center"><button class="btn btn-block btn-student" disabled><b>{{ day.day_title }}</b></button></li>
+    {% else %}
+  <li class="list-group-item justify-content-center"><button class="btn btn-block btn-student" ><b>{{ day.day_title }}</b></button></li>
+    {% endif %}
+    </a>
+{% endfor %}
+</ul>
+{% endblock %}

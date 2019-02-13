@@ -1,5 +1,7 @@
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
+from classroom.models import Student
+
 
 
 class SignUpView(TemplateView):

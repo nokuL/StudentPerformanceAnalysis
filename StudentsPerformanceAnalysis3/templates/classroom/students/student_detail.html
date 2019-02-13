@@ -15,14 +15,24 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
 <style type="text/css">
   .nav-tabs li a {font-size:22px;}
+  .list-group  {font-size:22px;}
+
 </style>
   </head>
 <body>
-<br>
-<br>
+<div class="col-6 text-right">
+     {% if user.is_authenticated %}
+     <p class="pt-3">Logged in as <strong>{{ user.username }}</strong>. <a href="{% url 'logout' %}">Log out</a>.</p>
+     {% else %}
+     <a href="{% url 'login' %}" class="btn btn-light" role="button">Log in</a>
+     <a href="{% url 'signup' %}" class="btn btn-primary" role="button">Sign up</a>
+     {% endif %}
+ </div>
 <br>
 <div >
+
 <div class="row">
+
     <div class="col-md-1">
 
     </div>
@@ -70,19 +80,121 @@
               <td><b>Email</b></td>
               <td>{{ student.email }}</td>
           </tr>
-
-
           </tbody>
       </table>
+        <br>
+       {% if user.is_student %}
+        <a href="{% url 'classroom:student_update' pk=student.pk %}"  class="btn btn-primary btn-lg" role="button">Update</a>
+       {% endif %}
     </div>
     <div class="col-md-7 col-md-offset-1" >
       <ul class="nav nav-tabs " >
-        <li><a href="#" data-toggle="tab" >Profile</a></li>
-        <li><a href="#" data-toggle="tab">Attendance</a></li>
-        <li><a href="#" data-toggle="tab">Exam</a></li>
-        <li><a href="#" data-toggle="tab">Career Options</a></li>
-        <li><a href="#" data-toggle="tab">Personality Details</a> </li>
+        <li class="active"><a href="#profileTab" data-toggle="tab" >Profile</a></li>
+        <li><a href="#attendanceTab" data-toggle="tab">Attendance</a></li>
+        <li><a href="#academicsTab" data-toggle="tab">Exam</a></li>
+        <li><a href="#careerTab" data-toggle="tab">Career Options</a></li>
+        <li><a href="#personalityTab" data-toggle="tab">Personality Details</a> </li>
    </ul>
+        <div class="tab-content">
+        <!--PROFILE TAB -->
+          <div id="profileTab" class="tab-pane fade in active">
+              <br>
+              <br>
+              <div class="container">
+                 <h2><b>Guardian Details</b></h2>
+                  <table class="table table-bordered">
+                      <tbody>
+                       <tr class="info">
+                          <td><b>First Name</b></td>
+                          <td>{{ student.guardian_first_name }}</td>
+                          <td><b> Last Name</b></td>
+                          <td>{{ student.guardian_last_name }}</td>
+                      </tr>
+                      <tr class="info">
+                          <td><b>Phone Number </b></td>
+                          <td>{{ student.guardian_phone_number }}</td>
+                          <td><b>Email</b></td>
+                          <td>{{ student.guardian_email }}</td>
+                      </tr>
+                      <tr class="info">
+                          <td><b>Relation </b></td>
+                          <td>{{ student.guardian }}</td>
+                          <td></td>
+                          <td></td>
+                      </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+        <!-- ATTENDANCE PANEL-->
+            <div id="attendanceTab" class="tab-pane fade">
+             <table class="table table-striped">
+                 <thead>
+                 <tr>
+                     <td><b>Day</b></td>
+                     <td><b>Attendance Status</b></td>
+                 </tr>
+                 </thead>
+                 <tbody>
+                  {% for attendance_record in attendance_records %}
+                      <tr>
+                       <td>{{ attendance_record.day.day_title }}</td>
+                          {% if attendance_record.attendance_status == True %}
+                       <td><button class="btn btn-success"><span class="glyphicon glyphicon-ok"></span></button></td>
+                       {% else %}
+                      <td><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></td>
+                      {% endif %}
+                      </tr>
+                  {% endfor %}
+                 <tr><td><b>Overall attendance</b></td>
+                     <td><b>{{ attendance_percentage }}&percnt;</b></td>
+                 </tr>
+                 </tbody>
+             </table>
+
+          </div>
+        <!-- ACADEMICS PANEL !!!!!-->
+            <div id="academicsTab" class="tab-pane fade">
+            <br>
+             <a href="{%  url 'classroom:record_test_result'%}" role="button" class="btn btn-primary">Record Test Result</a>
+                <div class="container">
+                   <table class="table table-striped">
+                   <thead>
+                    <tr>
+                        <td><b>Subject</b></td>
+                        <td><b>Test</b></td>
+                        <td><b>Mark</b></td>
+                        <td><b> Total</b></td>
+                        <td><b>&percnt;</b></td>
+                        <td><b>Pass status</b></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                   </thead>
+                     <tbody>
+                      {% for test_result in test_results %}
+                        <tr>
+                         <td>{{ test_result.test.subject.subject_title }}</td>
+                         <td>{{ test_result.test.test_title }}</td>
+                         <td>{{ test_result.test_score }}</td>
+                         <td>{{ test_result.test.total_score }}</td>
+                         <td>{{ test_result.percentage }}</td>
+                         <td>{{ test_result.pass_status }}</td>
+                         <td><a href="{% url 'classroom:edit_test_result' pk=test_result.pk %}" class="btn btn-primary" role="button">Edit</a></td>
+                         <td><a href="{% url 'classroom:delete' pk=test_result.pk %}" class="btn btn-danger" role="button">Delete</a></td>
+                        </tr>
+                      {% endfor%}
+                     </tbody>
+                 </table>
+    </div>
+          </div>
+            <div id="careerTab" class="tab-pane fade">
+               <h1>CAREER</h1>
+          </div>
+            <div id="personalityTab" class="tab-pane fade">
+              <h1>PERSONALITY</h1>
+          </div>
+        </div>
     </div>
 </div>
 </div>
