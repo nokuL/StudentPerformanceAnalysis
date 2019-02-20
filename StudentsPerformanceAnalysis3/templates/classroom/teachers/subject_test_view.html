@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<ul class="list-group">
+{% for test in tests %}
+    <h1>{{ test.test_title }}</h1>
+    <table class="table table-striped">
+    <thead>
+    <tr>
+        <td><b>First Name</b></td>
+        <td><b>Last Name</b></td>
+        <td><b>Test Score</b></td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for testresult in test.testresult_set.all %}
+        <tr>
+       <td>{{ testresult.student.first_name}}</td>
+       <td>{{ testresult.student.last_name }}</td>
+        <td>{{ testresult.test_score}}</td>
+       </tr>
+       {% endfor %}
+    </tbody>
+    <tfoot>
+
+    </tfoot>
+    </table>
+{% endfor %}
+</ul>
+{% endblock %}

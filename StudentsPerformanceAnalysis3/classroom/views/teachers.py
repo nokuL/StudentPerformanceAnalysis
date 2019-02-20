@@ -14,8 +14,8 @@ from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   UpdateView, TemplateView)
 
 from ..decorators import teacher_required
-from ..forms import TeacherSignUpForm
-from ..models import  User, Student, Day, AttendanceRecord, Subject, Day
+from ..forms import TeacherSignUpForm, TeacherUpdateForm
+from ..models import User, Student, Day, AttendanceRecord, Subject, Day, Teacher, Test
 
 
 class TeacherSignUpView(CreateView):
@@ -44,10 +44,18 @@ class TeacherDashboard(TemplateView):
             total_subjects = subjects.count()
             days = Day.objects.all()
             total_days = days.count()
+            user = self.request.user
+            teacher = Teacher.objects.get(user=user)
             context = super(TeacherDashboard, self).get_context_data(**kwargs)
             context = {'students': students, 'total_students': total_students, 'total_subjects': total_subjects,
-                       'total_days': total_days}
+                       'total_days': total_days, 'teacher': teacher}
             return context
+
+
+class TeacherUpdateView(UpdateView):
+    model = Teacher
+    form_class = TeacherUpdateForm
+    template_name = 'classroom/teachers/teacher_update_form.html'
 
 
 class Attendance(TemplateView):
@@ -90,7 +98,6 @@ class Attendance(TemplateView):
     def save_records(self, pk):
         day = Day.objects.get(pk=pk)
         day.checked = True
-        print("MMMMMMMMMMMMMMMMMMMMMMMMMMMM" + str(day.day_title))
         day.save()
         return redirect('classroom:attendance_days')
 
@@ -105,7 +112,31 @@ class AttendanceDays(TemplateView):
         return context
 
 
+class Subjects(TemplateView):
+    template_name = 'classroom/teachers/teacher_subjects_view.html'
+
+    def get_context_data(self, **kwargs):
+        subjects = Subject.objects.all()
+        for subject in subjects:
+            tests = Test.objects.filter(subject=subject)
+            subject.number_of_tests = tests.count()
+        super(Subjects, self).get_context_data(**kwargs)
+        context = {'subjects': subjects}
+        return context
+
+   # def get_subject_tests(self, pk):
+   #      subject = Subject.objects.get(pk=pk)
+   ##     return redirect('classroom:')
 
 
+class SubjectsTestsView(TemplateView):
+    template_name = 'classroom/teachers/subject_test_view.html'
 
+    def get_context_data(self, **kwargs):
+        subject_pk = self.kwargs['pk']
+        subject = Subject.objects.get(pk=subject_pk)
+        tests = Test.objects.filter(subject=subject)
+        super(SubjectsTestsView, self).get_context_data(**kwargs)
+        context = {'tests': tests}
+        return context
 

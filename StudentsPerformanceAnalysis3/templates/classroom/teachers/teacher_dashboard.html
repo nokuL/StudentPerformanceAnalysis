@@ -84,7 +84,7 @@
             <p>{{ total_students }} </p>
           </div>
         </div>
-
+        <a href="{% url 'classroom:teacher_subjects' %}">
         <div class="col-sm-3">
           <div class="well" id="subjects">
              <span class="glyphicon glyphicon-book "></span>
@@ -92,6 +92,7 @@
             <p>{{ total_subjects }} </p>
           </div>
         </div>
+         </a>
           <a href="{% url 'classroom:attendance_days' %}">
         <div class="col-sm-3">
           <div class="well" id="attendance">
@@ -109,7 +110,7 @@
         </div>
       </div>
      <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-4">
         <img src="{% static 'img/girl2.png' %}" class="rounded" alt="profile_picture" width="200" height="200" >
       <table class="table table-striped">
           <thead>
@@ -121,38 +122,31 @@
           <tbody>
           <tr>
               <td><b>First Name</b></td>
-              <td>{{ student.first_name }}</td>
-          </tr>
-          <tr>
-              <td><b>Middle Name</b></td>
-             <td>{{ student.second_name }}</td>
+              <td>{{ teacher.first_name }}</td>
           </tr>
           <tr>
               <td><b>Last Name</b></td>
-              <td>{{ student.last_name }}</td>
-          </tr>
-          <tr>
-              <td><b>Gender</b></td>
-              <td>{{ student.gender }}</td>
+              <td>{{ teacher.last_name }}</td>
           </tr>
           <tr>
               <td><b>Phone Number</b></td>
+              <td>{{ teacher.phone_number }}</td>
           </tr>
           <tr>
               <td><b>Email</b></td>
-              <td>{{ student.email }}</td>
+              <td>{{ teacher.email }}</td>
           </tr>
           </tbody>
       </table>
     </div>
-         <div class="col-md-6 col-md-offset-1">
+         <div class="col-md-8 ">
              <br>
              <br>
              <br>
              <br>
           <table class="table table-striped table-bordered" id="studentList" style="width:100%">
               <thead>
-               <tr><td>First Name</td><td>Middle Name</td><td>Last Name</td><td>Email</td><td>Phone Number</td><td></td></tr>
+               <tr><td>First Name</td><td>Middle Name</td><td>Last Name</td><td>Email</td><td></td></tr>
               </thead>
               <tbody>
                  {% for student in students %}
@@ -161,7 +155,6 @@
                       <td>{{ student.second_name }}</td>
                       <td>{{ student.last_name }}</td>
                       <td>{{ student.email }}</td>
-                      <td>{{ student.age }}</td>
                     <td><a href="{% url 'students:student_detail' pk=student.pk %}" ><button type="submit" name="student_pk" value="{{ student.pk }}" class="btn btn-primary">View</button></a></td>
                   </tr>
                  {% endfor %}

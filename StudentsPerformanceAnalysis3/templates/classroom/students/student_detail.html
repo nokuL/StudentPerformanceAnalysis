@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %}Django School{% endblock %}</title>
+    <title>{% block title %}Blaze{% endblock %}</title>
     <link rel="icon" href="{% static 'img/favicon.png' %}">
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -16,7 +16,59 @@
 <style type="text/css">
   .nav-tabs li a {font-size:22px;}
   .list-group  {font-size:22px;}
+  .p{
+   text-align: justify;
+  text-justify: inter-word;
+      font-size: 15px;
+  }
+  .ul{
+     font-size: 15px;
+  }
+  .test_button{
+      text-align: center;
+  }
 
+#personality_test {
+  background-color: #004A7F;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  border: none;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Arial;
+  font-size: 20px;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  -webkit-animation: glowing 1500ms infinite;
+  -moz-animation: glowing 1500ms infinite;
+  -o-animation: glowing 1500ms infinite;
+  animation: glowing 1500ms infinite;
+}
+@-webkit-keyframes glowing {
+  0% { background-color: #B20000; -webkit-box-shadow: 0 0 3px #B20000; }
+  50% { background-color: #FF0000; -webkit-box-shadow: 0 0 40px #FF0000; }
+  100% { background-color: #B20000; -webkit-box-shadow: 0 0 3px #B20000; }
+}
+
+@-moz-keyframes glowing {
+  0% { background-color: #B20000; -moz-box-shadow: 0 0 3px #B20000; }
+  50% { background-color: #FF0000; -moz-box-shadow: 0 0 40px #FF0000; }
+  100% { background-color: #B20000; -moz-box-shadow: 0 0 3px #B20000; }
+}
+
+@-o-keyframes glowing {
+  0% { background-color: #B20000; box-shadow: 0 0 3px #B20000; }
+  50% { background-color: #FF0000; box-shadow: 0 0 40px #FF0000; }
+  100% { background-color: #B20000; box-shadow: 0 0 3px #B20000; }
+}
+
+@keyframes glowing {
+  0% { background-color: #B20000; box-shadow: 0 0 3px #B20000; }
+  50% { background-color: #FF0000; box-shadow: 0 0 40px #FF0000; }
+  100% { background-color: #B20000; box-shadow: 0 0 3px #B20000; }
+}
 </style>
   </head>
 <body>
@@ -119,13 +171,49 @@
                       <tr class="info">
                           <td><b>Relation </b></td>
                           <td>{{ student.guardian }}</td>
-                          <td></td>
-                          <td></td>
+                          <td><b>Education Level</b></td>
+                          <td>{{ student.guardian_education_level }}</td>
                       </tr>
                       </tbody>
                   </table>
+              <br>
+                   {% if user.is_student %}
+                    <a href="{% url 'classroom:guardian_update' pk=student.pk %}"  class="btn btn-primary btn-lg" role="button">Update</a>
+                  {% endif %}
+              </div>
+              <br>
+              <br>
+              <div class="container">
+                 <h2><b>Other Details</b></h2>
+                  <table class="table table-bordered">
+                      <tbody>
+                       <tr class="info">
+                          <td><b>Extra Paid Classes</b></td>
+                          <td>{{ student.extra_paid_classes }}</td>
+                          <td><b>Internet Access for study </b></td>
+                          <td>{{ student.internet_access }}</td>
+                      </tr>
+                      <tr class="info">
+                          <td><b>Intend to pursue higher education </b></td>
+                          <td>{{ student.intend_to_pursue }}</td>
+                          <td><b>Free time after school</b></td>
+                          <td>{{ student.free_time_after_school }} hrs</td>
+                      </tr>
+                      <tr class="info">
+                          <td><b>Average weekly study time </b></td>
+                          <td>{{ student.average_weekly_study_time }} hrs</td>
+                          <td><b>Family size</b></td>
+                          <td>{{ student.family_size }}</td>
+                      </tr>
+                      </tbody>
+                  </table>
+                  <br>
+                   {% if user.is_student %}
+                    <a href="{% url 'classroom:other_details_update' pk=student.pk %}"  class="btn btn-primary btn-lg" role="button">Update</a>
+                  {% endif %}
               </div>
           </div>
+        <br>
         <!-- ATTENDANCE PANEL-->
             <div id="attendanceTab" class="tab-pane fade">
              <table class="table table-striped">
@@ -140,9 +228,9 @@
                       <tr>
                        <td>{{ attendance_record.day.day_title }}</td>
                           {% if attendance_record.attendance_status == True %}
-                       <td><button class="btn btn-success"><span class="glyphicon glyphicon-ok"></span></button></td>
+                       <td><button class="btn btn-success btn-lg"><span class="glyphicon glyphicon-ok"></span></button></td>
                        {% else %}
-                      <td><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></td>
+                      <td><button class="btn btn-danger btn-lg"><span class="glyphicon glyphicon-remove"></span></button></td>
                       {% endif %}
                       </tr>
                   {% endfor %}
@@ -192,7 +280,33 @@
                <h1>CAREER</h1>
           </div>
             <div id="personalityTab" class="tab-pane fade">
-              <h1>PERSONALITY</h1>
+                <br>
+                <div class="container container-fluid">
+                    <img src="{% static 'img/briggs.jpg' %}" class="img-rounded" width="800px" height="300px">
+                </div>
+                <br>
+                <div class="container container-fluid">
+                    <p class="p">
+                        One way to better understand your personality is to take a personality test. The test you will take is an open-source test that was developed to support education at no cost.
+                        It is based on Myer-Briggs Type Indicator (MBTI).Take our free personality test and discover what really drives you. See your Personality Type instantly after the test! Completely free.
+                    </p>
+                    <p class="p">
+                      <b>Guidelines:</b>
+                        <ul class="ul">
+                        <li>Choose the answer that best describes you. Your gut reaction is often the correct choice.</li>
+                        <li>Don’t pick an answer because it’s what you think society would want. Be true to yourself.</li>
+                        <li>Be as honest as possible, even if you don’t like the answer.</li>
+                       </ul>
+                    </p>
+                </div>
+                <div >
+                    <div class="row">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6"> <a href="{% url 'classroom:personality_test' %}" role="button" class="btn btn-block" id="personality_test"  >Take test</a></div>
+                        <div class="col-md-3"></div>
+                    </div>
+                </div>
+
           </div>
         </div>
     </div>
