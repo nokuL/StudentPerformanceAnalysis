@@ -36,7 +36,7 @@ trip = (('Judging', 'Inquire thoroughly about the trip details for planning purp
         ('Perceiving', 'Just get in the school bus and go , the best things happen spontaneously'))
 appointments = (('Judging', 'Yes'), ('Perceiving', 'No'))
 order = (('Judging', 'super organised'),
-         ('Sensing', 'a jumble of things you are working on'))
+         ('Perceiving', 'a jumble of things you are working on'))
 info_description = (('Sensing', 'the most important thing for me is what is happening here and now. '
                                 'I assess real situations and pay attention to detail'),
                     ('Intuition', 'facts are boring. I love to dream and play over upcoming events in my mind'))
@@ -73,6 +73,43 @@ class TestResult(models.Model):
 
     def __str__(self):
         return self.test.test_title
+
+
+class Personality(models.Model):
+    identifier = models.IntegerField(default='')
+    personality_name = models.CharField(max_length=10, default='')
+    image = models.ImageField(upload_to='personality_image', blank=True)
+    energy_title = models.CharField(max_length=15, default='')
+    energy_description1 = models.CharField(max_length=50, default='')
+    energy_description2 = models.CharField(max_length=50, default='')
+    energy_description3 = models.CharField(max_length=50, default='')
+    energy_description4 = models.CharField(max_length=50, default='')
+    energy_description5 = models.CharField(max_length=50, default='')
+    information_title = models.CharField(max_length=15, default='')
+    information_description1 = models.CharField(max_length=50, default='')
+    information_description2 = models.CharField(max_length=50, default='')
+    information_description3 = models.CharField(max_length=50, default='')
+    information_description4 = models.CharField(max_length=50, default='')
+    information_description5 = models.CharField(max_length=50, default='')
+    decision_title = models.CharField(max_length=15, default='')
+    decision_description1 = models.CharField(max_length=50, default='')
+    decision_description2 = models.CharField(max_length=50, default='')
+    decision_description3 = models.CharField(max_length=50, default='')
+    decision_description4 = models.CharField(max_length=50, default='')
+    decision_description5 = models.CharField(max_length=50, default='')
+    life_title = models.CharField(max_length=15, default='')
+    life_description1 = models.CharField(max_length=50, default='')
+    life_description2 = models.CharField(max_length=50, default='')
+    life_description3 = models.CharField(max_length=50, default='')
+    life_description4 = models.CharField(max_length=50, default='')
+    life_description5 = models.CharField(max_length=50, default='')
+    energy_explanation = models.CharField(max_length=500, default='')
+    information_explanation = models.CharField(max_length=500, default='')
+    decision_explanation = models.CharField(max_length=500, default='')
+    life_explanation = models.CharField(max_length=500, default='')
+
+    def __str__(self):
+        return self.personality_name
 
 
 class Subject(models.Model):
@@ -118,6 +155,8 @@ class Student(models.Model):
     email = models.CharField(max_length=100, default='')
     subjects = models.ManyToManyField(Subject)
     guardian_education_level = models.CharField(max_length=10, choices=Education_level, default='')
+    personality = models.ForeignKey(Personality, on_delete=models.PROTECT, default='', blank=True, null=True)
+    has_taken_test = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
@@ -145,24 +184,6 @@ class Day(models.Model):
         return self.day_title
 
 
-class Question(models.Model):
-    text = models.CharField(max_length=200)
-    question_number = models.IntegerField(default=1)
-
-    def __str__(self):
-        return self.text
-
-
-class Answer(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
-    text = models.CharField('Answer', max_length=255)
-    personality_attribute = models.ForeignKey('PersonalityAttribute', on_delete=models.CASCADE,
-                                              related_name='personality_attribute')
-
-    def __str__(self):
-        return self.text
-
-
 class PersonalityAttribute(models.Model):
     attribute_name = models.CharField(max_length=20)
 
@@ -171,27 +192,30 @@ class PersonalityAttribute(models.Model):
 
 
 class PersonalityRecord(models.Model):
-    psy_energy1 = models.CharField(max_length=10, choices=queue, default='')
-    psy_energy2 = models.CharField(max_length=10, choices=class_projects, default='')
-    psy_energy3 = models.CharField(max_length=10, choices=description, default='')
-    psy_energy4 = models.CharField(max_length=10, choices=friends, default='')
-    psy_energy5 = models.CharField(max_length=10, choices=roommates, default='')
-    info1 = models.CharField(max_length=10, choices=info_description, default='')
-    info2 = models.CharField(max_length=10, choices=yes_no, default='')
-    info3 = models.CharField(max_length=10, choices=situation , default='')
-    info4 = models.CharField(max_length=10, choices=imagination, default='')
-    info5 = models.CharField(max_length=10, choices=knowledge, default='')
-    decision1 = models.CharField(max_length=10, choices=Argument, default='')
-    decision2 = models.CharField(max_length=10, choices=making_a_decision, default='')
-    decision3 = models.CharField(max_length=10, choices=word_description, default='')
-    decision4 = models.CharField(max_length=10, choices=facts, default='')
-    decision5 = models.CharField(max_length=10, choices=relating, default='')
-    lyf1 = models.CharField(max_length=10, choices=yes_or_no, default='')
-    lyf2 = models.CharField(max_length=10, choices=mathematical, default='')
-    lyf3 = models.CharField(max_length=10, choices=trip, default='')
-    lyf4 = models.CharField(max_length=10, choices=appointments, default='')
-    lyf5 = models.CharField(max_length=10, choices=order, default='')
+    psy_energy1 = models.CharField(max_length=10, choices=queue, default='', blank=False)
+    psy_energy2 = models.CharField(max_length=10, choices=class_projects, default='', blank=False)
+    psy_energy3 = models.CharField(max_length=10, choices=description, default='', blank=False)
+    psy_energy4 = models.CharField(max_length=10, choices=friends, default='', blank=False)
+    psy_energy5 = models.CharField(max_length=10, choices=roommates, default='', blank=False)
+    info1 = models.CharField(max_length=10, choices=info_description, default='', blank=False)
+    info2 = models.CharField(max_length=10, choices=yes_no, default='', blank=False)
+    info3 = models.CharField(max_length=10, choices=situation , default='', blank=False)
+    info4 = models.CharField(max_length=10, choices=imagination, default='', blank=False)
+    info5 = models.CharField(max_length=10, choices=knowledge, default='', blank=False)
+    decision1 = models.CharField(max_length=10, choices=Argument, default='', blank=False)
+    decision2 = models.CharField(max_length=10, choices=making_a_decision, default='', blank=False)
+    decision3 = models.CharField(max_length=10, choices=word_description, default='', blank=False)
+    decision4 = models.CharField(max_length=10, choices=facts, default='', blank=False)
+    decision5 = models.CharField(max_length=10, choices=relating, default='', blank=False)
+    lyf1 = models.CharField(max_length=10, choices=yes_or_no, default='', blank=False)
+    lyf2 = models.CharField(max_length=10, choices=mathematical, default='', blank=False)
+    lyf3 = models.CharField(max_length=10, choices=trip, default='', blank=False)
+    lyf4 = models.CharField(max_length=10, choices=appointments, default='', blank=False)
+    lyf5 = models.CharField(max_length=10, choices=order, default='', blank=False)
     personality_category = models.CharField(max_length=10)
+
+
+
 
 
 

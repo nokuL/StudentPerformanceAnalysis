@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView, DetailView, DeleteView
-from ..models import User, Student, Subject, Test, TestResult, AttendanceRecord, Day, Teacher, Question, PersonalityRecord
+from ..models import User, Student, Subject, Test, TestResult, AttendanceRecord, Day, Teacher,  PersonalityRecord, Personality
 from ..forms import StudentSignUpForm, StudentUpdateForm, EditSubjectsForm, RecordTestResult, EditTestResult, \
     GuardianUpdateForm, OtherDetailsUpdateForm, PersonalityTestForm
 from ..decorators import student_required, teacher_required
@@ -154,7 +154,7 @@ class TestResultEditView(UpdateView):
         student = self.object.student
         student_pk = student.pk
         form.save()
-        return redirect('students:student_detail', pk=student.pk)
+        return redirect('students:student_detail', pk=student.pk )
 
 
 class TestResultDelete(DeleteView):
@@ -173,19 +173,34 @@ class PersonalityTest(CreateView):
         student = Student.objects.get(user=user)
         student_pk = student.pk
         personality_record = form.save()
-        self.process(personality_record)
+        personality_id = self.process(personality_record)
+        personality = Personality.objects.get(identifier=personality_id)
+        student.personality = personality
+        student.has_taken_test = True
+        student.save()
+        print('#################################'+ student.first_name + '###################'
+              + student.personality.personality_name)
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.psy_energy1))
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.psy_energy2))
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.psy_energy3))
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'+  str(personality_record.psy_energy4))
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.psy_energy5))
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.decision1))
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.decision2))
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.decision3))
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.decision4))
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.decision5))
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.info1))
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.info2))
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.info3))
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.info4))
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.info5))
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.lyf1))
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.lyf2))
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.lyf3))
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.lyf4))
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.lyf5))
+
         return redirect('students:student_detail', pk=student_pk)
 
     def process(self, personality_record):
@@ -310,9 +325,11 @@ class PersonalityTest(CreateView):
         print("Dataset Shape:: ", data.shape)
         predict = gnb.predict(
             [[energy, information, decision, life]])
-        print("Predict Value !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", str(predict) )
+        print("Predict Value !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", str(predict))
 
-        return ('')
+        personality_id = int(predict)
+
+        return personality_id
 
 
 

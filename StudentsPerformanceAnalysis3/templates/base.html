@@ -31,14 +31,7 @@
             <div class="col-6">
               <h1 class="logo">
                 <a href="{% url 'home' %}" id="logo">
-                  Blaze
-                  {% if user.is_authenticated %}
-                    {% if user.is_teacher %}
-                      <span class="icon-feather" data-toggle="tooltip" data-placement="right" title="Teacher profile"></span>
-                    {% else %}
-                      <span class="icon-graduation-cap" data-toggle="tooltip" data-placement="right" title="Student profile"></span>
-                    {% endif %}
-                  {% endif %}
+                  Blaze<span class="icon-graduation-cap" data-toggle="tooltip" data-placement="right" title="Student profile"></span>
                 </a>
               </h1>
             </div>

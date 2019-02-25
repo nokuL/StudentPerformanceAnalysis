@@ -21,11 +21,33 @@
   text-justify: inter-word;
       font-size: 15px;
   }
+  .card-header{
+      color: white;
+      font-size: 20px;
+  }
+  .card{
+      height: 450px;
+  }
   .ul{
      font-size: 15px;
   }
   .test_button{
       text-align: center;
+  }
+  #decision_description{
+      font-size: 15px;
+  }
+  #personalityImage{
+      text-align: center;
+      font-size: 25px;
+  }
+  .modal-header{
+      font-size: 20px;
+
+  }
+  .card-footer{
+      text-align: center;
+      font-size: 20px;
   }
 
 #personality_test {
@@ -80,7 +102,7 @@
      <a href="{% url 'signup' %}" class="btn btn-primary" role="button">Sign up</a>
      {% endif %}
  </div>
-<br>
+
 <div >
 
 <div class="row">
@@ -241,7 +263,7 @@
              </table>
 
           </div>
-        <!-- ACADEMICS PANEL !!!!!-->
+        <!-- ACADEMICS PANEL   ACADEMICS PANEL   ACADEMICS PANEL   ACADEMICS PANEL   ACADEMICS PANEL   ACADEMICS PANEL  !!!!!-->
             <div id="academicsTab" class="tab-pane fade">
             <br>
              <a href="{%  url 'classroom:record_test_result'%}" role="button" class="btn btn-primary">Record Test Result</a>
@@ -276,19 +298,194 @@
                  </table>
     </div>
           </div>
+        <!-- CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL!-->
             <div id="careerTab" class="tab-pane fade">
                <h1>CAREER</h1>
           </div>
+        <!-- PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL !-->
             <div id="personalityTab" class="tab-pane fade">
                 <br>
-                <div class="container container-fluid">
+                {% if student.has_taken_test == True %}
+                      <div class="container container-fluid" id="personalityImage">
+                      <div class="row">
+                        <div class="col-md-6"><img src="{{ student.personality.image.url }}" class="img-rounded" ></div>
+                          <div class="col-md-3">
+                              <br>
+                              <br>
+                              <span class="badge badge-pill badge-secondary"><b>{{ student.personality.energy_title }}{{ student.personality.information_title }}{{ student.personality.decision_title }}{{ student.personality.life_title }}</b></span></div>
+                      </div>
+
+                </div>
+                    <table class="table">
+                      <thead>
+                     <tr><td></td></tr>
+                     </thead>
+                    <tbody>
+                     <tr><td> <div class="card" ><div class="card-header bg-secondary">{{ student.personality.energy_title }}</div><div class="card-body"><p>{{ student.personality.energy_explanation }}</p>
+                         <div class="row">
+                              <div class="col-md-9 col-md-offset-1">
+                                   <ul class="list-group" id="decision_description">
+                                       <li>{{ student.personality.energy_description1}}</li>
+                                       <li>{{ student.personality.energy_description2}}</li>
+                                       <li>{{ student.personality.energy_description3}}</li>
+                                       <li>{{ student.personality.energy_description4}}</li>
+                                       <li>{{ student.personality.energy_description5}}</li>
+                                   </ul>
+                              </div>
+                          </div>
+                       </div>
+                         <div class="card-footer"> <button  data-toggle="modal" data-target="#energyModal" class=" btn btn-primary btn-block">View</button></div>
+                     </div>
+                     </td>
+                         <td><div class="card"><div class="card-header bg-secondary" >{{ student.personality.information_title }}</div><div class="card-body"><p>{{ student.personality.information_explanation }}</p>
+                           <div class="row">
+                              <div class="col-md-9 col-md-offset-1">
+                                   <ul class="list-group" id="decision_description">
+                                       <li>{{ student.personality.information_description1}}</li>
+                                       <li>{{ student.personality.information_description2}}</li>
+                                       <li>{{ student.personality.information_description3}}</li>
+                                       <li>{{ student.personality.information_description4}}</li>
+                                       <li>{{ student.personality.information_description5}}</li>
+                              </ul>
+                              </div>
+                          </div>
+                         </div>
+                            <div class="card-footer"> <button  data-toggle="modal" data-target="#informationModal" class=" btn btn-primary btn-block">View</button></div>
+                         </div>
+                             </td>
+                     </tr>
+                     <tr>
+                         <td> <div class="card"><div class="card-header bg-secondary">{{ student.personality.decision_title }}</div><div class="card-body"><p>{{ student.personality.decision_explanation }}</p>
+                          <div class="row">
+                              <div class="col-md-9 col-md-offset-1">
+                                   <ul class="list-group" id="decision_description">
+                                  <li>{{ student.personality.decision_description1 }}</li>
+                                  <li>{{ student.personality.decision_description2 }}</li>
+                                  <li>{{ student.personality.decision_description3 }}</li>
+                                  <li>{{ student.personality.decision_description4}}</li>
+                                  <li>{{ student.personality.decision_description5 }}</li>
+                              </ul>
+                              </div>
+                          </div>
+                         </div>
+                          <div class="card-footer"> <button  data-toggle="modal" data-target="#decisionModal" class=" btn btn-primary btn-block">View</button></div>
+                         </div>
+                         </td>
+                         <td> <div class="card"><div class="card-header bg-secondary">{{ student.personality.life_title }}</div><div class="card-body"><p>{{ student.personality.life_explanation }}</p>
+                             <div class="row">
+                              <div class="col-md-9 col-md-offset-1">
+                                   <ul class="list-group" id="decision_description">
+                                       <li>{{ student.personality.life_description1}}</li>
+                                       <li>{{ student.personality.life_description2}}</li>
+                                       <li>{{ student.personality.life_description3}}</li>
+                                       <li>{{ student.personality.life_description4}}</li>
+                                       <li>{{ student.personality.life_description5}}</li>
+                                   </ul>
+                              </div>
+                          </div>
+                         </div>
+                          <div class="card-footer"> <button  data-toggle="modal" data-target="#lifeModal" class=" btn btn-primary btn-block">View</button></div>
+                         </div>
+                         </td>
+                     </tr>
+                    </tbody>
+                    </table>
+                    <tbody>
+                    <div class="modal" id="energyModal">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="modal-title"><b>{{ student.personality.energy_title }}</b></div>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="personality_list">
+                                    <li>{{ student.personality.energy_title }}</li>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                </ul>
+                            </div>
+                             <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                              </div>
+                        </div>
+                    </div>
+                    </div>
+                    <!-- INFO MODAL !-->
+                    <div class="modal " id="informationModal">
+                          <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="modal-title"><b>{{ student.personality.information_title }}</b></div>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <ul>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                </ul>
+                            </div>
+                             <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                              </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="modal " id="decisionModal">
+                          <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="modal-title"><b>{{ student.personality.decision_title }}</b></div>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <ul>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                </ul>
+                            </div>
+                             <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                              </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="modal " id="lifeModal">
+                          <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="modal-title"><b>{{ student.personality.life_title }}</b></div>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <ul>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                    <li>{{ student.personality.energy_title }}</li>
+                                </ul>
+                            </div>
+                             <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                              </div>
+                        </div>
+                    </div>
+                    </div>
+
+                 {% else %}
+                    <div class="container container-fluid">
                     <img src="{% static 'img/briggs.jpg' %}" class="img-rounded" width="800px" height="300px">
                 </div>
                 <br>
                 <div class="container container-fluid">
                     <p class="p">
                         One way to better understand your personality is to take a personality test. The test you will take is an open-source test that was developed to support education at no cost.
-                        It is based on Myer-Briggs Type Indicator (MBTI).Take our free personality test and discover what really drives you. See your Personality Type instantly after the test! Completely free.
+                        It is based on Myer-Briggs Type Indicator (MBTI).Take our free personality test and discover what really drives you. See your Personality Type instantly after the test!
                     </p>
                     <p class="p">
                       <b>Guidelines:</b>
@@ -306,7 +503,7 @@
                         <div class="col-md-3"></div>
                     </div>
                 </div>
-
+                {% endif %}
           </div>
         </div>
     </div>
