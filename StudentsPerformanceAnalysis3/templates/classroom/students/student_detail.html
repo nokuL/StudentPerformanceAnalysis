@@ -16,6 +16,12 @@
 <style type="text/css">
   .nav-tabs li a {font-size:22px;}
   .list-group  {font-size:22px;}
+  #methodModal{
+      font-size: 20px;
+  }
+  .panel-heading{
+      font-size: 20px;
+  }
   .p{
    text-align: justify;
   text-justify: inter-word;
@@ -26,7 +32,7 @@
       font-size: 20px;
   }
   .card{
-      height: 450px;
+      height: 400px;
   }
   .ul{
      font-size: 15px;
@@ -45,10 +51,9 @@
       font-size: 20px;
 
   }
-  .card-footer{
-      text-align: center;
-      font-size: 20px;
-  }
+ #methodsButton{
+     font-size: 20px;
+ }
 
 #personality_test {
   background-color: #004A7F;
@@ -265,10 +270,15 @@
           </div>
         <!-- ACADEMICS PANEL   ACADEMICS PANEL   ACADEMICS PANEL   ACADEMICS PANEL   ACADEMICS PANEL   ACADEMICS PANEL  !!!!!-->
             <div id="academicsTab" class="tab-pane fade">
-            <br>
              <a href="{%  url 'classroom:record_test_result'%}" role="button" class="btn btn-primary">Record Test Result</a>
+                <br>
+                <br>
                 <div class="container">
-                   <table class="table table-striped">
+                {% for subject in subjects %}
+                    <div class="panel panel-default">
+                     <div class="panel-heading"><b>{{ subject.subject_title }}</b></div>
+                     <div class="panel-body">
+                       <table class="table table-striped">
                    <thead>
                     <tr>
                         <td><b>Subject</b></td>
@@ -283,24 +293,31 @@
                    </thead>
                      <tbody>
                       {% for test_result in test_results %}
-                        <tr>
-                         <td>{{ test_result.test.subject.subject_title }}</td>
-                         <td>{{ test_result.test.test_title }}</td>
-                         <td>{{ test_result.test_score }}</td>
-                         <td>{{ test_result.test.total_score }}</td>
-                         <td>{{ test_result.percentage }}</td>
-                         <td>{{ test_result.pass_status }}</td>
-                         <td><a href="{% url 'classroom:edit_test_result' pk=test_result.pk %}" class="btn btn-primary" role="button">Edit</a></td>
-                         <td><a href="{% url 'classroom:delete' pk=test_result.pk %}" class="btn btn-danger" role="button">Delete</a></td>
-                        </tr>
+                          {% if test_result.test.subject.subject_title == subject.subject_title %}
+                                <tr>
+                                 <td>{{ test_result.test.subject.subject_title }}</td>
+                                 <td>{{ test_result.test.test_title }}</td>
+                                 <td>{{ test_result.test_score }}</td>
+                                 <td>{{ test_result.test.total_score }}</td>
+                                 <td>{{ test_result.percentage }}</td>
+                                 <td>{{ test_result.pass_status }}</td>
+                                 <td><a href="{% url 'classroom:edit_test_result' pk=test_result.pk %}" class="btn btn-primary" role="button">Edit</a></td>
+                                  <td><a href="{% url 'classroom:delete' pk=test_result.pk %}" class="btn btn-danger" role="button">Delete</a></td>
+                                </tr>
+                          {% endif %}
                       {% endfor%}
                      </tbody>
                  </table>
+                     </div>
+                    </div>
+                {% endfor %}
+
     </div>
           </div>
         <!-- CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL!-->
             <div id="careerTab" class="tab-pane fade">
                <h1>CAREER</h1>
+                <img src="data:image/png;base64,{{graph|safe}}">
           </div>
         <!-- PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL !-->
             <div id="personalityTab" class="tab-pane fade">
@@ -334,7 +351,6 @@
                               </div>
                           </div>
                        </div>
-                         <div class="card-footer"> <button  data-toggle="modal" data-target="#energyModal" class=" btn btn-primary btn-block">View</button></div>
                      </div>
                      </td>
                          <td><div class="card"><div class="card-header bg-secondary" >{{ student.personality.information_title }}</div><div class="card-body"><p>{{ student.personality.information_explanation }}</p>
@@ -350,9 +366,8 @@
                               </div>
                           </div>
                          </div>
-                            <div class="card-footer"> <button  data-toggle="modal" data-target="#informationModal" class=" btn btn-primary btn-block">View</button></div>
-                         </div>
-                             </td>
+                             </div>
+                           </td>
                      </tr>
                      <tr>
                          <td> <div class="card"><div class="card-header bg-secondary">{{ student.personality.decision_title }}</div><div class="card-body"><p>{{ student.personality.decision_explanation }}</p>
@@ -368,7 +383,6 @@
                               </div>
                           </div>
                          </div>
-                          <div class="card-footer"> <button  data-toggle="modal" data-target="#decisionModal" class=" btn btn-primary btn-block">View</button></div>
                          </div>
                          </td>
                          <td> <div class="card"><div class="card-header bg-secondary">{{ student.personality.life_title }}</div><div class="card-body"><p>{{ student.personality.life_explanation }}</p>
@@ -384,90 +398,34 @@
                               </div>
                           </div>
                          </div>
-                          <div class="card-footer"> <button  data-toggle="modal" data-target="#lifeModal" class=" btn btn-primary btn-block">View</button></div>
                          </div>
                          </td>
                      </tr>
                     </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="2">
+                            <button  data-toggle="modal" data-target="#methodModal" class=" btn btn-secondary btn-block" id="methodsButton"><b>Learning Styles</b></button>
+
+                        </td>
+                    </tr>
+                    </tfoot>
                     </table>
-                    <tbody>
-                    <div class="modal" id="energyModal">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <div class="modal-title"><b>{{ student.personality.energy_title }}</b></div>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <ul class="personality_list">
-                                    <li>{{ student.personality.energy_title }}</li>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                </ul>
-                            </div>
-                             <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                              </div>
-                        </div>
-                    </div>
-                    </div>
-                    <!-- INFO MODAL !-->
-                    <div class="modal " id="informationModal">
+                    <!-- teaching methods modal !-->
+                    <div class="modal " id="methodModal">
                           <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <div class="modal-title"><b>{{ student.personality.information_title }}</b></div>
+                                <div class="modal-title"><b>{{ student.personality.personality_name }}</b></div>
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
                             <div class="modal-body">
-                                <ul>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                </ul>
-                            </div>
-                             <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                              </div>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="modal " id="decisionModal">
-                          <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <div class="modal-title"><b>{{ student.personality.decision_title }}</b></div>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <ul>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                </ul>
-                            </div>
-                             <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                              </div>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="modal " id="lifeModal">
-                          <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <div class="modal-title"><b>{{ student.personality.life_title }}</b></div>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <ul>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                    <li>{{ student.personality.energy_title }}</li>
-                                    <li>{{ student.personality.energy_title }}</li>
+                                <ul >
+                                    <li>{{ student.personality.teaching_method1 }}</li>
+                                    <li>{{ student.personality.teaching_method2}}</li>
+                                    <li>{{ student.personality.teaching_method3 }}</li>
+                                    <li>{{ student.personality.teaching_method4 }}</li>
+                                    <li>{{ student.personality.teaching_method5 }}</li>
                                 </ul>
                             </div>
                              <div class="modal-footer">

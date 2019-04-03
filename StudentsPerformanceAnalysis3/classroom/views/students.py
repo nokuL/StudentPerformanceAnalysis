@@ -17,6 +17,12 @@ import pandas as pd
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 import time
+from matplotlib.backends.backend_agg import FigureCanvasAgg as figureCanvas
+from matplotlib.figure import Figure
+import io
+import matplotlib.pyplot as plt
+plt.rcdefaults()
+import PIL
 
 
 class StudentSignUpView(CreateView):
@@ -38,6 +44,21 @@ class StudentSignUpView(CreateView):
 class StudentsDetailView(DetailView):
     model = Student
     template_name = 'classroom/students/student_detail.html'
+
+    def graphs(self):
+        fig = Figure()
+        x = [2, 4, 6]
+        y = [1, 3, 5]
+        plt.plot(x, y)
+        plt.xlabel('Plot number')
+        plt.ylabel('Important var')
+        plt.title('Graph')
+        plt.show()
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        conte
+        plt.close(fig)
+        return buf
 
     def pass_status(self, test_result):
         test = Test.objects.get(testresult=test_result)
@@ -178,28 +199,6 @@ class PersonalityTest(CreateView):
         student.personality = personality
         student.has_taken_test = True
         student.save()
-        print('#################################'+ student.first_name + '###################'
-              + student.personality.personality_name)
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.psy_energy1))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.psy_energy2))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.psy_energy3))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'+  str(personality_record.psy_energy4))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.psy_energy5))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.decision1))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.decision2))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.decision3))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.decision4))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.decision5))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.info1))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.info2))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.info3))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.info4))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.info5))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.lyf1))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.lyf2))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.lyf3))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.lyf4))
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + str(personality_record.lyf5))
 
         return redirect('students:student_detail', pk=student_pk)
 

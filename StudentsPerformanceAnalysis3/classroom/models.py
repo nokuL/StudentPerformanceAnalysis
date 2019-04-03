@@ -45,6 +45,7 @@ situation = (('Sensing', 'pay more attention to the current situation'),
              ('Intuition', 'think of  possible sequence of events'))
 imagination = (('Sensing', 'No'), ('Intuition', 'Yes'))
 knowledge = (('Intuition', 'Books and manuals'), ('Sensing', 'hands on experience'))
+subject_category =(('Commercials', 'Commercials'), ('Arts', 'Arts'), ('Sciences', 'Sciences'))
 
 
 
@@ -106,7 +107,13 @@ class Personality(models.Model):
     energy_explanation = models.CharField(max_length=500, default='')
     information_explanation = models.CharField(max_length=500, default='')
     decision_explanation = models.CharField(max_length=500, default='')
-    life_explanation = models.CharField(max_length=500, default='')
+    life_explanation = models.CharField(max_length=500, default='', blank=True)
+    teaching_method1 = models.CharField(max_length=1000, default='', blank=True)
+    teaching_method2 = models.CharField(max_length=1000, default='', blank=True)
+    teaching_method3 = models.CharField(max_length=1000, default='', blank=True)
+    teaching_method4 = models.CharField(max_length=1000, default='', blank=True)
+    teaching_method5 = models.CharField(max_length=1000, default='', blank=True)
+    teaching_method6 = models.CharField(max_length=1000, default='', blank=True)
 
     def __str__(self):
         return self.personality_name
@@ -115,6 +122,7 @@ class Personality(models.Model):
 class Subject(models.Model):
         subject_title = models.CharField(max_length=30)
         number_of_tests = models.IntegerField(default=1)
+        category = models.CharField(max_length=15, choices=subject_category, blank=True, default='')
 
         def __str__(self):
             return self.subject_title
@@ -136,15 +144,15 @@ class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     first_name = models.CharField(max_length=45, default='')
     second_name = models.CharField(max_length=45, default='')
-    last_name = models.CharField(max_length=45, default='')
-    age = models.IntegerField(default=1)
-    gender = models.CharField(max_length=10, choices=Gender_Choices, default='')
-    date_of_birth = models.DateField("Date", default=date.today)
-    guardian = models.CharField(max_length=10, choices=Guardian, default='')
-    guardian_first_name = models.CharField(max_length=20, default='')
-    guardian_last_name = models.CharField(max_length=20, default='')
+    last_name = models.CharField(max_length=45, default='', blank=True)
+    age = models.IntegerField(default=1, blank=True)
+    gender = models.CharField(max_length=10, choices=Gender_Choices, default='', blank=True)
+    date_of_birth = models.DateField("Date", default=date.today, blank=True)
+    guardian = models.CharField(max_length=10, choices=Guardian, default='', blank=True)
+    guardian_first_name = models.CharField(max_length=20, default='', blank=True)
+    guardian_last_name = models.CharField(max_length=20, default='', blank=True)
     guardian_phone_number = models.CharField(max_length=20, default='')
-    guardian_email = models.EmailField(max_length=100, default='')
+    guardian_email = models.EmailField(max_length=100, default='', blank=True)
     extra_paid_classes = models.CharField(max_length=3, choices=YES_OR_NO, default='')
     internet_access = models.CharField(max_length=3, choices=YES_OR_NO, default='')
     intend_to_pursue = models.CharField(max_length=3, choices=YES_OR_NO, default='')

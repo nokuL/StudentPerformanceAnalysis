@@ -3,7 +3,6 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-  <h2 class="mb-3">Personality test</h2>
   <form method="post" novalidate>
     {% csrf_token %}
     {{ form}}
