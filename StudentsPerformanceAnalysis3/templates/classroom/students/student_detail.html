@@ -170,7 +170,7 @@
       <ul class="nav nav-tabs " >
         <li class="active"><a href="#profileTab" data-toggle="tab" >Profile</a></li>
         <li><a href="#attendanceTab" data-toggle="tab">Attendance</a></li>
-        <li><a href="#academicsTab" data-toggle="tab">Exam</a></li>
+        <li><a href="#academicsTab" data-toggle="tab">Academics</a></li>
         <li><a href="#careerTab" data-toggle="tab">Career Options</a></li>
         <li><a href="#personalityTab" data-toggle="tab">Personality Details</a> </li>
    </ul>
@@ -270,13 +270,15 @@
           </div>
         <!-- ACADEMICS PANEL   ACADEMICS PANEL   ACADEMICS PANEL   ACADEMICS PANEL   ACADEMICS PANEL   ACADEMICS PANEL  !!!!!-->
             <div id="academicsTab" class="tab-pane fade">
-             <a href="{%  url 'classroom:record_test_result'%}" role="button" class="btn btn-primary">Record Test Result</a>
+            {% if user.is_teacher == True %}
+             <a href="{%  url 'classroom:record_test_result' pk=student.pk%}" role="button" class="btn btn-primary">Record Test Result</a>
+            {% endif %}
                 <br>
                 <br>
                 <div class="container">
                 {% for subject in subjects %}
                     <div class="panel panel-default">
-                     <div class="panel-heading"><b>{{ subject.subject_title }}</b></div>
+                     <div class="panel-heading">   <span class="badge badge-pill badge-primary"><b>{{ subject.subject_title }}</b></span></div>
                      <div class="panel-body">
                        <table class="table table-striped">
                    <thead>
@@ -307,6 +309,11 @@
                           {% endif %}
                       {% endfor%}
                      </tbody>
+                       <tfoot>
+                       <tr>
+                           <td><a href="{% url 'classroom:bar_graphs' sub_pk=subject.pk student_pk=student.pk %}"><button class="btn btn-primary">Grapphs</button>
+                    </a></td>
+                       </tr></tfoot>
                  </table>
                      </div>
                     </div>
@@ -316,11 +323,53 @@
           </div>
         <!-- CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL CAREER PANEL!-->
             <div id="careerTab" class="tab-pane fade">
-               <h1>CAREER</h1>
-                <img src="data:image/png;base64,{{graph|safe}}">
+
+                {%  if student.has_taken_test %}
+                    <ul class="list-group">
+                    {% for career in first_careers %}
+                 <li class="list-group-item ">
+                 <table>
+                     <thead>
+
+                     </thead>
+                     <tbody>
+                     <tr>
+                         <td><img src="{{ career.career_image.url }}" class="img-rounded"  height="100" width="150"></td>
+                         <td>  <h2>{{ career.career_title }}</h2>
+                      <h2>{{ career.career_description }}</h2></td>
+                     </tr>
+                     </tbody>
+                 </table>
+                 </li>
+                     {% endfor %}
+                         {% for career in second_careers %}
+                 <li class="list-group-item ">
+                 <table>
+                     <thead>
+
+                     </thead>
+                     <tbody>
+                     <tr>
+                         <td colspan="2"><img src="{{ career.career_image.url }}" class="img-rounded"  height="100" width="150"></td>
+                         <td>  <h2>{{ career.career_title }}</h2>
+                      <h2>{{ career.career_description }}</h2></td>
+                     </tr>
+                     </tbody>
+                 </table>
+                 </li>
+                     {% endfor %}
+                    </ul>
+                    {% else %}
+                    <h1>PLEASE TAKE TEST</h1>
+            {% endif %}
+            <br>
+                <a href="{% url 'classroom:career_list_view'  %}"  class="btn btn-primary btn-lg" role="button">Next</a>
           </div>
         <!-- PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL !-->
             <div id="personalityTab" class="tab-pane fade">
+            <div class="row">
+            </div>
+             <script type="text/javascript" src="http://kozea.github.com/pygal.js/latest/pygal-tooltips.min.js"></script>
                 <br>
                 {% if student.has_taken_test == True %}
                       <div class="container container-fluid" id="personalityImage">
@@ -333,7 +382,106 @@
                       </div>
 
                 </div>
-                    <table class="table">
+                     <div class="col-md-6">{{ cht_fruits|safe }}
+                     <br>
+                         <div class="row">
+                             <div class="col-md-2"></div>
+                             <div class="col-md-8">
+                             <button  data-toggle="modal" data-target="#methodModal" class=" btn btn-secondary btn-block" id="methodsButton"><b>Learning Styles</b></button>
+
+                             </div>
+                             <div class="col-md-2"></div>
+
+                         </div>
+                     </div>
+                  {% comment %}  <table class="table">
+                      <thead>
+                     <tr><td></td></tr>
+                     </thead>
+                    <tbody>
+                     <tr><td> <div class="card" ><div class="card-header bg-secondary">{{ student.personality.energy_title }}</div><div class="card-body"><p>{{ student.personality.energy_explanation }}</p>
+                         <div class="row">
+                              <div class="col-md-9 col-md-offset-1">
+                                   <ul class="list-group" id="decision_description">
+                                       <li>{{ student.personality.energy_description1}}</li>
+                                       <li>{{ student.personality.energy_description2}}</li>
+                                       <li>{{ student.personality.energy_description3}}</li>
+                                       <li>{{ student.personality.energy_description4}}</li>
+                                       <li>{{ student.personality.energy_description5}}</li>
+                                   </ul>
+                              </div>
+                          </div>
+                       </div>
+                     </div>
+                     </td>
+                         <td><div class="card"><div class="card-header bg-secondary" >{{ student.personality.information_title }}</div><div class="card-body"><p>{{ student.personality.information_explanation }}</p>
+                           <div class="row">
+                              <div class="col-md-9 col-md-offset-1">
+                                   <ul class="list-group" id="decision_description">
+                                       <li>{{ student.personality.information_description1}}</li>
+                                       <li>{{ student.personality.information_description2}}</li>
+                                       <li>{{ student.personality.information_description3}}</li>
+                                       <li>{{ student.personality.information_description4}}</li>
+                                       <li>{{ student.personality.information_description5}}</li>
+                              </ul>
+                              </div>
+                          </div>
+                         </div>
+                             </div>
+                           </td>
+                     </tr>
+                     <tr>
+                         <td> <div class="card"><div class="card-header bg-secondary">{{ student.personality.decision_title }}</div><div class="card-body"><p>{{ student.personality.decision_explanation }}</p>
+                          <div class="row">
+                              <div class="col-md-9 col-md-offset-1">
+                                   <ul class="list-group" id="decision_description">
+                                  <li>{{ student.personality.decision_description1 }}</li>
+                                  <li>{{ student.personality.decision_description2 }}</li>
+                                  <li>{{ student.personality.decision_description3 }}</li>
+                                  <li>{{ student.personality.decision_description4}}</li>
+                                  <li>{{ student.personality.decision_description5 }}</li>
+                              </ul>
+                              </div>
+                          </div>
+                         </div>
+                         </div>
+                         </td>
+                         <td> <div class="card"><div class="card-header bg-secondary">{{ student.personality.life_title }}</div><div class="card-body"><p>{{ student.personality.life_explanation }}</p>
+                             <div class="row">
+                              <div class="col-md-9 col-md-offset-1">
+                                   <ul class="list-group" id="decision_description">
+                                       <li>{{ student.personality.life_description1}}</li>
+                                       <li>{{ student.personality.life_description2}}</li>
+                                       <li>{{ student.personality.life_description3}}</li>
+                                       <li>{{ student.personality.life_description4}}</li>
+                                       <li>{{ student.personality.life_description5}}</li>
+                                   </ul>
+                              </div>
+                          </div>
+                         </div>
+                         </div>
+                         </td>
+                     </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="2">
+                            <button  data-toggle="modal" data-target="#methodModal" class=" btn btn-secondary btn-block" id="methodsButton"><b>Learning Styles</b></button>
+
+                        </td>
+                    </tr>
+                    </tfoot>
+                    </table>{% endcomment %}
+                    <!-- teaching methods modal !-->
+                    <div class="modal " id="methodModal">
+                          <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="modal-title"><b>{{ student.personality.personality_name }}</b></div>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                 <table class="table">
                       <thead>
                      <tr><td></td></tr>
                      </thead>
@@ -411,22 +559,6 @@
                     </tr>
                     </tfoot>
                     </table>
-                    <!-- teaching methods modal !-->
-                    <div class="modal " id="methodModal">
-                          <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <div class="modal-title"><b>{{ student.personality.personality_name }}</b></div>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <ul >
-                                    <li>{{ student.personality.teaching_method1 }}</li>
-                                    <li>{{ student.personality.teaching_method2}}</li>
-                                    <li>{{ student.personality.teaching_method3 }}</li>
-                                    <li>{{ student.personality.teaching_method4 }}</li>
-                                    <li>{{ student.personality.teaching_method5 }}</li>
-                                </ul>
                             </div>
                              <div class="modal-footer">
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>

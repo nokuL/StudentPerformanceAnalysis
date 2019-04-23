@@ -7,9 +7,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView, DetailView, DeleteView
-from ..models import User, Student, Subject, Test, TestResult, AttendanceRecord, Day, Teacher,  PersonalityRecord, Personality
+from ..models import User, Student, Subject, Test, TestResult, AttendanceRecord, Day, Teacher,  PersonalityRecord,\
+    Personality, SubjectAverage, CategoryAverage, CareerField, CareerPersonalityCategory
 from ..forms import StudentSignUpForm, StudentUpdateForm, EditSubjectsForm, RecordTestResult, EditTestResult, \
-    GuardianUpdateForm, OtherDetailsUpdateForm, PersonalityTestForm
+    GuardianUpdateForm, OtherDetailsUpdateForm, PersonalityTestForm, PersonalityTestForm2, PersonalityTestForm3, \
+    PersonalityTestForm4
 from ..decorators import student_required, teacher_required
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
@@ -17,12 +19,16 @@ import pandas as pd
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 import time
-from matplotlib.backends.backend_agg import FigureCanvasAgg as figureCanvas
+from  django.http import  HttpResponse
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import io
-import matplotlib.pyplot as plt
-plt.rcdefaults()
-import PIL
+import matplotlib.pyplot as pyplot
+pyplot.rcdefaults()
+from pygal.style import CleanStyle
+
+from .charts import FruitPieChart
+import pygal
 
 
 class StudentSignUpView(CreateView):
@@ -45,20 +51,222 @@ class StudentsDetailView(DetailView):
     model = Student
     template_name = 'classroom/students/student_detail.html'
 
-    def graphs(self):
-        fig = Figure()
-        x = [2, 4, 6]
-        y = [1, 3, 5]
-        plt.plot(x, y)
-        plt.xlabel('Plot number')
-        plt.ylabel('Important var')
-        plt.title('Graph')
-        plt.show()
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-        conte
-        plt.close(fig)
-        return buf
+    def pass_fail_risk(self, student):
+        print("STUUUUUUUDEEEENT STUDENT STUDENT" + str(student.average_weekly_study_time))
+        return 0
+
+    def best_subject_category(self, student, subjects):
+        commercials_list = list()
+        arts_list = list()
+        sciences_list = list()
+        comm_average_list = list()
+        arts_average_list = list()
+        science_average_list = list()
+        category_averages = list()
+        sorted_categories = ["0", "1", "2"]
+        # categorising subjects
+        for subject in subjects:
+            if subject.category == "Commercials":
+                commercials_list.append(subject)
+            elif subject.category == "Arts":
+                arts_list.append(subject)
+            elif subject.category == "Sciences":
+                sciences_list.append(subject)
+            else:
+                print("NO SUBJECT")
+
+       #calculating commercials average
+        for comm_subject in commercials_list:
+            comm_test_results = list()
+            subject_sum = 0
+            subject_average_mark = 0
+            tests = Test.objects.filter(subject=comm_subject)
+            number_of_tests = len(tests)
+            for test in tests:
+                try:
+                    test_result = TestResult.objects.get(student=student, test=test)
+                except TestResult.DoesNotExist:
+                    test_result = None
+                if test_result is not None:
+                    comm_test_results.append(test_result)
+            for result in comm_test_results:
+                subject_sum = subject_sum + result.test_score
+                if number_of_tests > 0:
+                    subject_average_mark = (subject_sum/number_of_tests)
+            subject_average = SubjectAverage()
+            subject_average.subject = comm_subject
+            subject_average.student = student
+            subject_average.subject_average_mark = subject_average_mark
+            comm_average_list.append(subject_average)
+        comm_average = self.category_average(comm_average_list)
+        comm_sub_average = CategoryAverage()
+        comm_sub_average.student = student
+        comm_sub_average.category_name = "Commercials"
+        comm_sub_average.category_average_mark = comm_average
+        category_averages.append(comm_sub_average)
+
+            #calculating arts average
+        for art_sub in arts_list:
+            arts_test_results = list()
+            subject_sum = 0
+            subject_average_mark = 0
+            tests = Test.objects.filter(subject=art_sub)
+            number_of_tests = len(tests)
+            for test in tests:
+                try:
+                    test_result = TestResult.objects.get(student=student, test=test)
+                except TestResult.DoesNotExist:
+                    test_result = None
+                if test_result is not None:
+                    arts_test_results.append(test_result)
+            for result in arts_test_results:
+                subject_sum = subject_sum + result.test_score
+                if number_of_tests > 0:
+                    subject_average_mark = (subject_sum/number_of_tests)
+            subject_average = SubjectAverage()
+            subject_average.subject = art_sub
+            subject_average.student = student
+            subject_average.subject_average_mark = subject_average_mark
+            arts_average_list.append(subject_average)
+        arts_average = self.category_average(arts_average_list)
+        arts_sub_average = CategoryAverage()
+        arts_sub_average.student = student
+        arts_sub_average.category_name = "Arts"
+        arts_sub_average.category_average_mark = arts_average
+        category_averages.append(arts_sub_average)
+
+        #calculating sciences average
+        for science_sub in sciences_list:
+            science_test_results = list()
+            subject_sum = 0
+            subject_average_mark = 0
+            tests = Test.objects.filter(subject=science_sub)
+            number_of_tests = len(tests)
+            for test in tests:
+                try:
+                    test_result = TestResult.objects.get(student=student, test=test)
+                except TestResult.DoesNotExist:
+                    test_result = None
+                if test_result is not None:
+                    science_test_results.append(test_result)
+            for result in science_test_results:
+                subject_sum = subject_sum + result.test_score
+                if number_of_tests > 0:
+                    subject_average_mark = (subject_sum / number_of_tests)
+            subject_average = SubjectAverage()
+            subject_average.subject = science_sub
+            subject_average.student = student
+            subject_average.subject_average_mark = subject_average_mark
+            science_average_list.append(subject_average)
+        sciences_average = self.category_average(science_average_list)
+        sciences_sub_average = CategoryAverage()
+        sciences_sub_average.student = student
+        sciences_sub_average.category_name = "Sciences"
+        sciences_sub_average.category_average_mark = sciences_average
+        category_averages.append(sciences_sub_average)
+        print(category_averages)
+        sorted_average_marks = self.highest_mark_category(category_averages)
+        print("SORTED AVERAGE MARKS" + str(sorted_average_marks))
+        for category_average in category_averages:
+            if category_average.category_average_mark == sorted_average_marks[0]:
+                first_category = category_average.category_name
+                sorted_categories[0] = first_category
+            if category_average.category_average_mark == sorted_average_marks[1]:
+                second_category = category_average.category_name
+                sorted_categories[1] = second_category
+            if category_average.category_average_mark == sorted_average_marks[2]:
+                third_category = category_average.category_name
+                sorted_categories[2] = third_category
+        print(sorted_categories)
+        return sorted_categories
+
+    def category_average(self, categorylist):
+        category_sum = 0
+        for category in categorylist:
+            if len(categorylist) > 0:
+                category_sum = category_sum + category.subject_average_mark
+        if len(categorylist) > 0:
+            no_of_subjects = len(categorylist)
+            category_average = (category_sum / no_of_subjects)
+            return category_average
+        else:
+            return 0
+
+    def highest_mark_category(self, category_average_list):
+        category_averages = list()
+        for category in category_average_list:
+            category_averages.append(category.category_average_mark)
+        category_averages.sort(reverse=True)
+        return category_averages
+
+    def best_subjects(self, student, subjects):
+        subject_average_list = list()
+        best_subjects = subjects
+        for subject in subjects:
+            tests_result_array = list()
+            subject_sum = 0
+            subject_average_mark = 0
+            tests = Test.objects.filter(subject=subject)
+            number_of_tests = len(tests)
+            for test in tests:
+                try:
+                    test_result = TestResult.objects.get(student=student, test=test)
+                except TestResult.DoesNotExist:
+                    test_result = None
+                if test_result is not None:
+                    tests_result_array.append(test_result)
+            for result in tests_result_array:
+                subject_sum = subject_sum + result.test_score
+                if number_of_tests > 0:
+                    subject_average_mark = (subject_sum/number_of_tests)
+            subject_average = SubjectAverage()
+            subject_average.subject = subject
+            subject_average.student = student
+            subject_average.subject_average_mark = subject_average_mark
+            subject_average_list.append(subject_average)
+        subject_marks = self.max_subject_average(subject_average_list)
+        print("SUBJECT MARKS" + str(subject_marks))
+        for subject_average in subject_average_list:
+            if len(subject_average_list) >= 3:
+                if subject_average.subject_average_mark == subject_marks[0]:
+                    first_best_subject = subject_average.subject
+                    best_subjects[0] = first_best_subject
+                if subject_average.subject_average_mark == subject_marks[1]:
+                    second_best_subject = subject_average.subject
+                    best_subjects[1] = second_best_subject
+                if subject_average.subject_average_mark == subject_marks[2]:
+                    third_best_subject = subject_average.subject
+                    best_subjects[2] = third_best_subject
+            elif len(subject_average_list) == 2:
+                if subject_average.subject_average_mark == subject_marks[0]:
+                    first_best_subject = subject_average.subject
+                    best_subjects[0] = first_best_subject
+                if subject_average.subject_average_mark == subject_marks[1]:
+                    second_best_subject = subject_average.subject
+                    best_subjects[1] = second_best_subject
+            else:
+                if subject_average.subject_average_mark == subject_marks[0]:
+                    first_best_subject = subject_average.subject
+                    best_subjects[0] = first_best_subject
+
+        return best_subjects
+
+    def max_subject_average(self, subject_average_list):
+        subject_marks = list()
+        for subject_average in subject_average_list:
+            subject_mark = subject_average.subject_average_mark
+            subject_marks.append(subject_mark)
+        subject_marks.sort(reverse=True)
+        return subject_marks
+
+    def best_subjects_in_career(self, student, careers):
+        related_subjects = list()
+        for career in careers:
+            subjects = list(career.dominant_subjects.all())
+            for subject in subjects:
+                related_subjects.append(subject)
+        best_subject_in_career = self.best_subjects(student, related_subjects)
+        return best_subject_in_career
 
     def pass_status(self, test_result):
         test = Test.objects.get(testresult=test_result)
@@ -87,6 +295,7 @@ class StudentsDetailView(DetailView):
     def get_context_data(self, **kwargs):
         if self.request.user.is_student:
             student = Student.objects.get(user=self.request.user)
+            self.pass_fail_risk(student)
             test_results = TestResult.objects.filter(student=student)
             for test_result in test_results:
                 self.pass_status(test_result)
@@ -94,10 +303,60 @@ class StudentsDetailView(DetailView):
             user = self.request.user
             attendance_records = AttendanceRecord.objects.filter(student=student)
             attendance_percentage = self.attendance_percentage(student)
-            context = super(StudentsDetailView, self).get_context_data(**kwargs)
-            context = {'test_results': test_results, 'student': student, 'subjects': subjects, 'user': user,
-                       'attendance_records': attendance_records, 'attendance_percentage': attendance_percentage}
-            return context
+            best_categories = self.best_subject_category(student, subjects)
+            first_best = best_categories[0]
+            second_best = best_categories[1]
+            third_best = best_categories[2]
+            if student.has_taken_test:
+                career_category_ids = self.process_career(first_best, second_best, student)
+                first_career_category_id = career_category_ids[0]
+                second_career_category_id = career_category_ids[1]
+                first_career_category = CareerPersonalityCategory.objects.get(
+                    career_personality_identifier=first_career_category_id)
+                second_career_category = CareerPersonalityCategory.objects.get(
+                    career_personality_identifier=second_career_category_id)
+                first_careers = CareerField.objects.filter(career_personality_category=first_career_category)
+                print("FIRST CAREERS" + str(first_careers))
+                first_best_subjects_in_career = self.best_subjects_in_career(student, first_careers)
+                print("FIRST BEST SUBJECTS IN CAREER" + str(first_best_subjects_in_career))
+                second_careers = CareerField.objects.filter(career_personality_category=second_career_category)
+                print("SECOND CAREERS " + str(second_careers))
+                second_best_subjects_in_career = self.best_subjects_in_career(student, second_careers)
+                official_first_careers = CareerField.objects.filter(career_personality_category=first_career_category,
+                                                                    dominant_subjects=first_best_subjects_in_career[0])
+                official_second_careers = CareerField.objects.filter(career_personality_category=second_career_category,
+                                                                     dominant_subjects=second_best_subjects_in_career[0])
+                print("SECOND BEST SUBJECTS IN CAREER" + str(second_best_subjects_in_career))
+                print("********************************" + str(official_first_careers))
+                context = super(StudentsDetailView, self).get_context_data(**kwargs)
+                cht_fruits = FruitPieChart(
+
+                    height=600,
+                    width=800,
+                    explicit_size=True,
+                    style=CleanStyle,
+                    student=student,
+
+                )
+
+                # Call the `.generate()` method on our chart object
+                # and pass it to template context.
+                cht_fruits = cht_fruits.generate()
+                context = {'test_results': test_results, 'student': student,
+                           'subjects': subjects, 'user': user, 'attendance_records': attendance_records,
+                           'attendance_percentage': attendance_percentage,
+                           'first_best': first_best, 'second_best': second_best, 'third_best': third_best,
+                           'first_careers': official_first_careers, 'second_careers': official_second_careers,
+                           'cht_fruits': cht_fruits}
+                return context
+            else:
+                context = super(StudentsDetailView, self).get_context_data(**kwargs)
+                context = {'test_results': test_results, 'student': student,
+                           'subjects': subjects, 'user': user, 'attendance_records': attendance_records,
+                           'attendance_percentage': attendance_percentage,
+                           'first_best': first_best, 'second_best': second_best, 'third_best': third_best,
+                           }
+                return context
         if self.request.user.is_teacher:
             student_pk = self.kwargs['pk']
             user = User.objects.get(pk=student_pk)
@@ -109,11 +368,111 @@ class StudentsDetailView(DetailView):
             user = self.request.user
             attendance_records = AttendanceRecord.objects.filter(student=student)
             attendance_percentage = self.attendance_percentage(student)
-            context = super(StudentsDetailView, self).get_context_data(**kwargs)
-            context = {'test_results': test_results, 'student': student,
-                       'subjects': subjects, 'user': user, 'attendance_records': attendance_records,
-                       'attendance_percentage': attendance_percentage}
-            return context
+            best_categories = self.best_subject_category(student, subjects)
+            first_best = best_categories[0]
+            second_best = best_categories[1]
+            third_best = best_categories[2]
+            print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK" + first_best)
+            print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK" + second_best)
+            print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK" + third_best)
+
+            if student.has_taken_test:
+                career_category_ids = self.process_career(first_best, second_best, student)
+                first_career_category_id = career_category_ids[0]
+                second_career_category_id = career_category_ids[1]
+                first_career_category = CareerPersonalityCategory.objects.get(
+                    career_personality_identifier=first_career_category_id)
+                second_career_category = CareerPersonalityCategory.objects.get(
+                    career_personality_identifier=second_career_category_id)
+                first_careers = CareerField.objects.filter(career_personality_category=first_career_category)
+                print("FIRST CAREERS" + str(first_careers))
+                first_best_subjects_in_career = self.best_subjects_in_career(student, first_careers)
+                print("FIRST BEST SUBJECTS IN CAREER" + str(first_best_subjects_in_career))
+                second_careers = CareerField.objects.filter(career_personality_category=second_career_category)
+                print("SECOND CAREERS " + str(second_careers))
+                second_best_subjects_in_career = self.best_subjects_in_career(student, second_careers)
+                official_first_careers = CareerField.objects.filter(career_personality_category=first_career_category,
+                                                                    dominant_subjects=first_best_subjects_in_career[0])
+                official_second_careers = CareerField.objects.filter(career_personality_category=second_career_category,
+                                                                     dominant_subjects=second_best_subjects_in_career[
+                                                                         0])
+                print("SECOND BEST SUBJECTS IN CAREER" + str(second_best_subjects_in_career))
+                print("********************************" + str(official_first_careers))
+                context = super(StudentsDetailView, self).get_context_data(**kwargs)
+                cht_fruits = FruitPieChart(
+                    height=600,
+                    width=800,
+                    explicit_size=True,
+                    style=CleanStyle,
+                    student=student
+                )
+
+                # Call the `.generate()` method on our chart object
+                # and pass it to template context.
+                cht_fruits = cht_fruits.generate()
+                context = {'test_results': test_results, 'student': student,
+                           'subjects': subjects, 'user': user, 'attendance_records': attendance_records,
+                           'attendance_percentage': attendance_percentage,
+                           'first_best': first_best, 'second_best': second_best, 'third_best': third_best,
+                           'first_careers': official_first_careers, 'second_careers': official_second_careers,
+                           'cht_fruits': cht_fruits}
+                return context
+            else:
+                context = super(StudentsDetailView, self).get_context_data(**kwargs)
+                context = {'test_results': test_results, 'student': student,
+                           'subjects': subjects, 'user': user, 'attendance_records': attendance_records,
+                           'attendance_percentage': attendance_percentage,
+                           'first_best': first_best, 'second_best': second_best, 'third_best': third_best,
+                           }
+                return context
+
+    def process_career(self, first_best, second_best, student):
+            personality_identifier = student.personality.identifier
+            if first_best == 'Sciences':
+                first_subject_category = 1
+            elif first_best == 'Commercials':
+                first_subject_category = 2
+            else:
+                first_subject_category = 3
+
+            if second_best == 'Sciences':
+                second_subject_category = 1
+            elif second_best == 'Commercials':
+                second_subject_category = 2
+            else:
+                second_subject_category = 3
+
+            data = pd.read_csv('classroom/uploads/career.csv', delimiter=',')
+
+            gnb = GaussianNB()
+            data = data[[
+                "personality",
+                "subject_category",
+                "career_category"
+            ]].dropna(axis=0, how='any')
+            used_features = [
+                "personality",
+                "subject_category",
+            ]
+            print('jjjjjjjjjjjjjjjjjjjjjjjjjjj' + str(personality_identifier) + '' + str(first_subject_category))
+            X_train, X_test = train_test_split(data, test_size=0.56, random_state=int(time.time()))
+            gnb.fit(
+                X_train[used_features].astype(float),
+                X_train["career_category"].astype(float)
+            )
+            print(data.head())
+            print("Dataset Lenght:: ", len(data))
+            print("Dataset Shape:: ", data.shape)
+            predict_first = gnb.predict(
+            [[personality_identifier, first_subject_category]])
+            predict_second = gnb.predict(
+                [[personality_identifier, second_subject_category]])
+            first_career_category_id = int(predict_first)
+            second_career_category_id = int(predict_second)
+            career_category_ids = [0, 1]
+            career_category_ids[0] = first_career_category_id
+            career_category_ids[1] = second_career_category_id
+            return career_category_ids
 
 
 class StudentUpdateView(UpdateView):
@@ -184,10 +543,10 @@ class TestResultDelete(DeleteView):
     template_name = 'classroom/students/testresult_confirm_delete.html'
 
 
-class PersonalityTest(CreateView):
+class PersonalityTest4(UpdateView):
     model = PersonalityRecord
-    template_name = 'classroom/students/personality_test.html'
-    form_class = PersonalityTestForm
+    form_class = PersonalityTestForm4
+    template_name = 'classroom/students/personality_test2.html'
 
     def form_valid(self, form):
         user = self.request.user
@@ -313,7 +672,7 @@ class PersonalityTest(CreateView):
             "decision",
             "life"
         ]
-        print('jjjjjjjjjjjjjjjjjjjjjjjjjjj' + str(energy)+''+str(information)+''+str(decision)+''+str(life))
+        print('jjjjjjjjjjjjjjjjjjjjjjjjjjj' + str(energy) + '' + str(information) + '' + str(decision) + '' + str(life))
         X_train, X_test = train_test_split(data, test_size=0.56, random_state=int(time.time()))
         gnb.fit(
             X_train[used_features].astype(float),
@@ -331,9 +690,95 @@ class PersonalityTest(CreateView):
         return personality_id
 
 
+class PersonalityTest3(UpdateView):
+    model = PersonalityRecord
+    form_class = PersonalityTestForm3
+    template_name = 'classroom/students/personality_test2.html'
+
+    def form_valid(self, form):
+        personality_record = form.save()
+        personality_record_pk = personality_record.pk
+
+        return redirect('students:update_personality4', pk=personality_record_pk)
 
 
+class PersonalityTest2(UpdateView):
+    model = PersonalityRecord
+    form_class = PersonalityTestForm2
+    template_name = 'classroom/students/personality_test2.html'
+
+    def form_valid(self, form):
+
+        personality_record = form.save()
+        personality_record_pk = personality_record.pk
+
+        return redirect('students:update_personality3', pk=personality_record_pk)
 
 
+class PersonalityTest(CreateView):
+    model = PersonalityRecord
+    template_name = 'classroom/students/personality_test.html'
+    form_class = PersonalityTestForm
+
+    def form_valid(self, form):
+
+        personality_record = form.save()
+        personality_record_pk = personality_record.pk
+
+        return redirect('students:update_personality', pk=personality_record_pk)
 
 
+class CareerListView(TemplateView):
+    template_name = 'classroom/students/career_list.html'
+
+    def get_context_data(self, **kwargs):
+
+        return 0
+
+
+class BarGraph(TemplateView):
+    template_name = 'classroom/students/subject_bar_graphs.html'
+
+    def get_context_data(self, **kwargs):
+        test_results = list()
+        test_1 = 0
+        test_2 = 0
+        test_3 = 0
+        test_4 = 0
+
+        student_pk = self.kwargs['student_pk']
+        subject_pk = self.kwargs['sub_pk']
+        student = Student.objects.get(pk=student_pk)
+        subject = Subject.objects.get(pk=subject_pk)
+        print("HHHHHHHHHHHHHHHHHHHHHHH" + student.first_name)
+        print("HHHHHHHHHHHHHHHHHHHHHHH" + subject.subject_title)
+        tests = Test.objects.filter(subject=subject)
+        for test in tests:
+            try:
+                test_result = TestResult.objects.get(student=student, test=test)
+            except TestResult.DoesNotExist:
+                test_result = None
+            if test_result is not None:
+                test_results.append(test_result)
+        for test_result in test_results:
+            if test_result.test.test_number == 1:
+                test_1 = test_result.test_score
+            if test_result.test.test_number == 2:
+                test_2 = test_result.test_score
+            if test_result.test.test_number == 3:
+                test_3 = test_result.test_score
+            if test_result.test.test_number == 4:
+                test_4 = test_result.test_score
+        data = {'test_1': test_1, 'test_2': test_2, 'test_3': test_3, 'test_4': test_4}
+        graph = self.graphs(data)
+        context = super(BarGraph, self).get_context_data(**kwargs)
+        context ={'subject': subject, 'graph': graph}
+        return context
+
+    def graphs(self, data):
+        b_chart = pygal.Bar()
+        b_chart.title = "Performance graph"
+        b_chart_data = data
+        for key, value in b_chart_data.items():
+            b_chart.add(key, value)
+        return b_chart.render(is_unicode=True)

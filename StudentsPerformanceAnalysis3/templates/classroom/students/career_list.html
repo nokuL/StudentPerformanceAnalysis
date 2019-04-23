@@ -1,10 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+       <ul class="list-group">
+                    {% for career in first_careers %}
+                 <li class="list-group-item ">
+                 <table>
+                     <thead>
+
+                     </thead>
+                     <tbody>
+                     <tr>
+                         <td><img src="{{ career.career_image.url }}" class="img-rounded"  height="100"></td>
+                         <td>  <h2>{{ career.career_title }}</h2>
+                      <h2>{{ career.career_description }}</h2></td>
+                     </tr>
+                     </tbody>
+                 </table>
+                 </li>
+                     {% endfor %}
+                         {% for career in second_careers %}
+                 <li class="list-group-item ">
+                 <table>
+                     <thead>
+
+                     </thead>
+                     <tbody>
+                     <tr>
+                         <td colspan="2"><img src="{{ career.career_image.url }}" class="img-rounded"  height="100"></td>
+                         <td>  <h2>{{ career.career_title }}</h2>
+                      <h2>{{ career.career_description }}</h2></td>
+                     </tr>
+                     </tbody>
+                 </table>
+                 </li>
+                     {% endfor %}
+                    </ul>
+{% endblock %}

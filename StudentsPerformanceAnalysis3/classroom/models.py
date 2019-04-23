@@ -45,9 +45,7 @@ situation = (('Sensing', 'pay more attention to the current situation'),
              ('Intuition', 'think of  possible sequence of events'))
 imagination = (('Sensing', 'No'), ('Intuition', 'Yes'))
 knowledge = (('Intuition', 'Books and manuals'), ('Sensing', 'hands on experience'))
-subject_category =(('Commercials', 'Commercials'), ('Arts', 'Arts'), ('Sciences', 'Sciences'))
-
-
+subject_category = (('Commercials', 'Commercials'), ('Arts', 'Arts'), ('Sciences', 'Sciences'))
 
 
 class User(AbstractUser):
@@ -63,6 +61,24 @@ class Test(models.Model):
 
     def __str__(self):
         return self.test_title
+
+
+class SubjectAverage(models.Model):
+    subject_average_mark = models.IntegerField(default=0)
+    subject = models.ForeignKey('Subject', on_delete=models.PROTECT)
+    student = models.ForeignKey('Student', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.student.first_name + " " + self.subject.subject_title
+
+
+class CategoryAverage(models.Model):
+    category_average_mark = models.IntegerField(default=0)
+    category_name = models.CharField(choices=subject_category, max_length=20, default='')
+    student = models.ForeignKey('Student', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.student.first_name + "Category Average"
 
 
 class TestResult(models.Model):
@@ -223,7 +239,37 @@ class PersonalityRecord(models.Model):
     personality_category = models.CharField(max_length=10)
 
 
+class CareerField(models.Model):
+    career_title = models.CharField(max_length=50, blank=False, default='')
+    career_description = models.CharField(max_length=1000, blank=False, default='')
+    career_subject_category = models.CharField(max_length=20, choices=subject_category, default='')
+    career_image = models.ImageField(upload_to='career_image', blank=False, default='')
+    dominant_subjects = models.ManyToManyField(Subject, blank=False, default='')
+    career_personality_category = models.ManyToManyField('CareerPersonalityCategory')
 
+    def __str__(self):
+        return self.career_title
+
+
+class Nokuthaba(models.Model):
+    kjklllk = models.CharField(max_length=12)
+
+
+class Fruit(models.Model):
+    name = models.CharField(max_length=255)
+    amt = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+
+
+class CareerPersonalityCategory(models.Model):
+    career_personality_category_name = models.CharField(max_length=30)
+    career_personality_identifier = models.IntegerField(default=0)
+    career_personality = models.IntegerField
+
+    def __str__(self):
+        return self.career_personality_category_name
 
 
 

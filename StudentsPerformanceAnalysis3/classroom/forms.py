@@ -102,29 +102,27 @@ class OtherDetailsUpdateForm(forms.ModelForm):
     extra_paid_classes = forms.ChoiceField(choices=YES_OR_NO, widget=forms.Select(attrs={
         'class': 'form-control'
     }))
-    internet_access = forms.ChoiceField(choices=YES_OR_NO, widget=forms.Select(attrs={
-        'class': 'form-control'
-    }))
-    intend_to_pursue = forms.ChoiceField(choices=YES_OR_NO, widget=forms.Select(attrs={
-        'class': 'form-control'
-    }))
-    out_going = forms.ChoiceField(choices=YES_OR_NO, widget=forms.Select(attrs={
-        'class': 'form-control'
-    }))
-    free_time_after_school = forms.IntegerField(widget=forms.NumberInput(attrs={
-        'class': 'form-control'
-    }))
-    average_weekly_study_time = forms.IntegerField(widget=forms.NumberInput(attrs={
-        'class': 'form-control'
-    }))
-    family_size = forms.IntegerField(widget=forms.NumberInput(attrs={
-        'class': 'form-control'
-    }))
+    internet_access = forms.ChoiceField(label='Do you often use the internet for further research?', choices=YES_OR_NO,
+                                  widget=forms.Select(attrs={
+                                      'class': 'form-control'
+                                  }))
+
+    intend_to_pursue = forms.ChoiceField(label='Do you intend to pursue with further education?', choices=YES_OR_NO,
+                                         widget=forms.Select(attrs={'class': 'form-control'
+                                                                    }))
+
+    free_time_after_school = forms.IntegerField(label='How much free time do you have after school?',
+                                                widget=forms.NumberInput(attrs={'class': 'form-control'
+                                                                                }))
+    average_weekly_study_time = forms.IntegerField(label='What is your average weekly study time?',
+                                                   widget=forms.NumberInput(attrs={
+                                                       'class': 'form-control'
+                                                   }))
 
     class Meta:
         model = Student
-        fields = ('extra_paid_classes', 'internet_access', 'intend_to_pursue', 'out_going', 'free_time_after_school',
-                  'average_weekly_study_time', 'family_size')
+        fields = ('extra_paid_classes', 'internet_access', 'intend_to_pursue',  'free_time_after_school',
+                  'average_weekly_study_time')
 
 
 class TeacherUpdateForm(forms.ModelForm):
@@ -156,13 +154,13 @@ class RecordTestResult(forms.ModelForm):
        )
     student = forms.ModelChoiceField(
         widget=forms.Select(attrs={
-            'class': 'form-control',
+          'class': 'form-control',
         }),
         queryset=Student.objects.all())
 
     class Meta:
         model = TestResult
-        fields = ('test_score', 'test', 'student')
+        fields = ('test_score', 'test')
 
 
 class EditTestResult(forms.ModelForm):
@@ -195,7 +193,15 @@ class PersonalityTestForm(forms.ModelForm):
     psy_energy4 = forms.CharField(label='You have been introduced to a friend of a friend :', max_length=10,
                                   widget=forms.RadioSelect(choices=friends))
     psy_energy5 = forms.CharField(label='Roommates:', max_length=10, widget=forms.RadioSelect(choices=roommates))
-    decision1 = forms.CharField(label='In an argument, you would rather :',  max_length=10,
+
+
+    class Meta:
+        model = PersonalityRecord
+        fields = ('psy_energy1', 'psy_energy2', 'psy_energy3', 'psy_energy4', 'psy_energy5')
+
+
+class PersonalityTestForm2(forms.ModelForm):
+    decision1 = forms.CharField(label='In an argument, you would rather :', max_length=10,
                                 widget=forms.RadioSelect(choices=Argument))
     decision2 = forms.CharField(label='When making a decision you often : ', max_length=10,
                                 widget=forms.RadioSelect(choices=making_a_decision))
@@ -205,6 +211,13 @@ class PersonalityTestForm(forms.ModelForm):
                                 widget=forms.RadioSelect(choices=facts))
     decision5 = forms.CharField(label='It is often difficult for you to relate to the way other people feel',
                                 max_length=10, widget=forms.RadioSelect(choices=relating))
+
+    class Meta:
+        model = PersonalityRecord
+        fields = ( 'decision1', 'decision2', 'decision3', 'decision4', 'decision5')
+
+
+class PersonalityTestForm3(forms.ModelForm):
     info1 = forms.CharField(label='Which of these descriptions suits you more ?', max_length=10,
                             widget=forms.RadioSelect(choices=info_description))
     info2 = forms.CharField(label='Do you often get carried away by fantasies and ideas ?', max_length=10,
@@ -215,6 +228,13 @@ class PersonalityTestForm(forms.ModelForm):
                             max_length=10, widget=forms.RadioSelect(choices=imagination))
     info5 = forms.CharField(label='Which way do you find easier for you to gain knowledge', max_length=10,
                             widget=forms.RadioSelect(choices=knowledge))
+
+    class Meta:
+        model = PersonalityRecord
+        fields = ('info1', 'info2', 'info3', 'info4', 'info5')
+
+
+class PersonalityTestForm4(forms.ModelForm):
     lyf1 = forms.CharField(label='Do you often find yourself completing tasks within the stipulated time lines?',
                            max_length=10, widget=forms.RadioSelect(choices=yes_or_no))
     lyf2 = forms.CharField(label='When given mathematical problems for an assignment, do you often :', max_length=10,
@@ -228,7 +248,4 @@ class PersonalityTestForm(forms.ModelForm):
 
     class Meta:
         model = PersonalityRecord
-        fields = ('psy_energy1', 'psy_energy2', 'psy_energy3', 'psy_energy4', 'psy_energy5',
-                  'decision1', 'decision2', 'decision3', 'decision4', 'decision5',
-                  'info1', 'info2', 'info3', 'info4', 'info5',
-                  'lyf1', 'lyf2', 'lyf3', 'lyf4', 'lyf5')
+        fields = ('lyf1', 'lyf2', 'lyf3', 'lyf4', 'lyf5')

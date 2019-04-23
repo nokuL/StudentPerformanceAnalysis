@@ -10,7 +10,7 @@
                   <tr>
                       <td>{{ subject.subject_title }}</td>
                       <td>{{ subject.number_of_tests }}</td>
-                      <td><a href="{% url 'classroom:subject_tests' pk=subject.pk %}"><button class="btn btn-block btn-success" ><b>View</b></button></a></td>
+                      <td><a href="{% url 'classroom:subject_tests' pk=subject.pk %}"><button class="btn btn-block btn-primary" ><b>View</b></button></a></td>
                    </tr>
                  {% endfor %}
 

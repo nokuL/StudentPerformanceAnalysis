@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from .views import classroom, students, teachers
+from .views import classroom, students, teachers, charts
 urlpatterns = [
     path('', classroom.home, name='home'),
 
@@ -9,12 +9,17 @@ urlpatterns = [
         path('student/<int:pk>', students.StudentUpdateView.as_view(), name='student_update'),
         path('editsubjects/<int:pk>', students.EditSubjectsView.as_view(), name='edit_subjects'),
         path('viewSubjects', students.SubjectsView.as_view(), name='view_subjects'),
-        path('recordResult', students.RecordTestResult.as_view(), name='record_test_result'),
+        path('recordResult/<int:pk>', students.RecordTestResult.as_view(), name='record_test_result'),
         path('editTestResult/<int:pk>', students.TestResultEditView.as_view(), name='edit_test_result'),
         path('delete/<int:pk>', students.TestResultDelete.as_view(), name='delete'),
         path('guardianUpdate/<int:pk>', students.GuardianUpdateView.as_view(), name='guardian_update'),
         path('otherDetails/<int:pk>', students.OtherDetailsUpdateView.as_view(), name='other_details_update'),
-        path('personalityTest', students.PersonalityTest.as_view(), name='personality_test')
+        path('personalityTest', students.PersonalityTest.as_view(), name='personality_test'),
+        path('updatePersonality/<int:pk>', students.PersonalityTest2.as_view(),  name='update_personality'),
+        path('updatePersonality3/<int:pk>', students.PersonalityTest3.as_view(),  name='update_personality3'),
+        path('updatePersonality4/<int:pk>', students.PersonalityTest4.as_view(),  name='update_personality4'),
+        path('careers', students.CareerListView.as_view(), name='career_list_view'),
+        path('bar_graph/<int:sub_pk>/<int:student_pk>', students.BarGraph.as_view(), name='bar_graphs'),
     ], 'classroom'), namespace='students')),
 
     path('teachers/', include(([
