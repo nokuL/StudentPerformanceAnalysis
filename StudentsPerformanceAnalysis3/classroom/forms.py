@@ -154,13 +154,13 @@ class RecordTestResult(forms.ModelForm):
        )
     student = forms.ModelChoiceField(
         widget=forms.Select(attrs={
-          'class': 'form-control',
+            'class': 'form-control',
         }),
         queryset=Student.objects.all())
 
     class Meta:
         model = TestResult
-        fields = ('test_score', 'test')
+        fields = ('test_score', 'test', 'student')
 
 
 class EditTestResult(forms.ModelForm):

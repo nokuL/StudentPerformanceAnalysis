@@ -20,6 +20,7 @@ urlpatterns = [
         path('updatePersonality4/<int:pk>', students.PersonalityTest4.as_view(),  name='update_personality4'),
         path('careers', students.CareerListView.as_view(), name='career_list_view'),
         path('bar_graph/<int:sub_pk>/<int:student_pk>', students.BarGraph.as_view(), name='bar_graphs'),
+        path('second_careers', students.SecondCareers.as_view(), name='second_careers')
     ], 'classroom'), namespace='students')),
 
     path('teachers/', include(([

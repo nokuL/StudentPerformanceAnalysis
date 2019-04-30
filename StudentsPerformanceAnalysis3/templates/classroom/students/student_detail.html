@@ -172,7 +172,7 @@
         <li><a href="#attendanceTab" data-toggle="tab">Attendance</a></li>
         <li><a href="#academicsTab" data-toggle="tab">Academics</a></li>
         <li><a href="#careerTab" data-toggle="tab">Career Options</a></li>
-        <li><a href="#personalityTab" data-toggle="tab">Personality Details</a> </li>
+        <li><a href="#personalityTab" data-toggle="tab">Personality</a> </li>
    </ul>
         <div class="tab-content">
         <!--PROFILE TAB -->
@@ -283,7 +283,6 @@
                        <table class="table table-striped">
                    <thead>
                     <tr>
-                        <td><b>Subject</b></td>
                         <td><b>Test</b></td>
                         <td><b>Mark</b></td>
                         <td><b> Total</b></td>
@@ -297,21 +296,22 @@
                       {% for test_result in test_results %}
                           {% if test_result.test.subject.subject_title == subject.subject_title %}
                                 <tr>
-                                 <td>{{ test_result.test.subject.subject_title }}</td>
                                  <td>{{ test_result.test.test_title }}</td>
                                  <td>{{ test_result.test_score }}</td>
                                  <td>{{ test_result.test.total_score }}</td>
                                  <td>{{ test_result.percentage }}</td>
                                  <td>{{ test_result.pass_status }}</td>
+                                    {% if user.is_teacher %}
                                  <td><a href="{% url 'classroom:edit_test_result' pk=test_result.pk %}" class="btn btn-primary" role="button">Edit</a></td>
                                   <td><a href="{% url 'classroom:delete' pk=test_result.pk %}" class="btn btn-danger" role="button">Delete</a></td>
-                                </tr>
+                                    {% endif %}
+                                        </tr>
                           {% endif %}
                       {% endfor%}
                      </tbody>
                        <tfoot>
                        <tr>
-                           <td><a href="{% url 'classroom:bar_graphs' sub_pk=subject.pk student_pk=student.pk %}"><button class="btn btn-primary">Grapphs</button>
+                           <td><a href="{% url 'classroom:bar_graphs' sub_pk=subject.pk student_pk=student.pk %}"><button class="btn btn-primary">Graph</button>
                     </a></td>
                        </tr></tfoot>
                  </table>
@@ -342,28 +342,12 @@
                  </table>
                  </li>
                      {% endfor %}
-                         {% for career in second_careers %}
-                 <li class="list-group-item ">
-                 <table>
-                     <thead>
-
-                     </thead>
-                     <tbody>
-                     <tr>
-                         <td colspan="2"><img src="{{ career.career_image.url }}" class="img-rounded"  height="100" width="150"></td>
-                         <td>  <h2>{{ career.career_title }}</h2>
-                      <h2>{{ career.career_description }}</h2></td>
-                     </tr>
-                     </tbody>
-                 </table>
-                 </li>
-                     {% endfor %}
                     </ul>
                     {% else %}
                     <h1>PLEASE TAKE TEST</h1>
             {% endif %}
             <br>
-                <a href="{% url 'classroom:career_list_view'  %}"  class="btn btn-primary btn-lg" role="button">Next</a>
+                <a href="{% url 'students:second_careers' %}"  class="btn btn-primary btn-lg" role="button">Next</a>
           </div>
         <!-- PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL PERSONALITY PANEL !-->
             <div id="personalityTab" class="tab-pane fade">
@@ -587,11 +571,13 @@
                     </p>
                 </div>
                 <div >
+                {% if user.is_student == True %}
                     <div class="row">
                         <div class="col-md-3"></div>
                         <div class="col-md-6"> <a href="{% url 'classroom:personality_test' %}" role="button" class="btn btn-block" id="personality_test"  >Take test</a></div>
                         <div class="col-md-3"></div>
                     </div>
+                    {% endif %}
                 </div>
                 {% endif %}
           </div>

@@ -37,6 +37,8 @@ class TeacherSignUpView(CreateView):
 class TeacherDashboard(TemplateView):
         template_name = 'classroom/teachers/teacher_dashboard.html'
 
+
+
         def get_context_data(self, **kwargs):
             students = Student.objects.all()
             total_students = students.count()
@@ -50,6 +52,7 @@ class TeacherDashboard(TemplateView):
             context = {'students': students, 'total_students': total_students, 'total_subjects': total_subjects,
                        'total_days': total_days, 'teacher': teacher}
             return context
+
 
 
 class TeacherUpdateView(UpdateView):

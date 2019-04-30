@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+ {% for career in second_careers %}
+                 <li class="list-group-item ">
+                 <table>
+                     <thead>
+
+                     </thead>
+                     <tbody>
+                     <tr>
+                         <td><img src="{{ career.career_image.url }}" class="img-rounded"  height="100" width="150"></td>
+                         <td>  <h2>{{ career.career_title }}</h2>
+                      <h2>{{ career.career_description }}</h2></td>
+                     </tr>
+                     </tbody>
+                 </table>
+                 </li>
+                     {% endfor %}
+{% endblock %}

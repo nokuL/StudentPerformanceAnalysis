@@ -201,6 +201,7 @@ class StudentsDetailView(DetailView):
 
     def best_subjects(self, student, subjects):
         subject_average_list = list()
+        unique_subject_averages = list()
         best_subjects = subjects
         for subject in subjects:
             tests_result_array = list()
@@ -225,8 +226,10 @@ class StudentsDetailView(DetailView):
             subject_average.subject_average_mark = subject_average_mark
             subject_average_list.append(subject_average)
         subject_marks = self.max_subject_average(subject_average_list)
-        print("SUBJECT MARKS" + str(subject_marks))
+        #### The list is comprised of all the subjects , redundantly ###
+        print("SUBJECT MARKS FIRST FIRST" + str(len(subject_marks)))
         for subject_average in subject_average_list:
+            print("??????????????????????????????????" + subject_average.subject.subject_title + (">>>>>>>>>>>>>>>>>>>>>>>>>") + str(subject_average.subject_average_mark))
             if len(subject_average_list) >= 3:
                 if subject_average.subject_average_mark == subject_marks[0]:
                     first_best_subject = subject_average.subject
@@ -249,14 +252,21 @@ class StudentsDetailView(DetailView):
                     first_best_subject = subject_average.subject
                     best_subjects[0] = first_best_subject
 
+        print("BEST SUBJECT 1" + str(best_subjects[0].subject_title))
+        print("BEST SUBJECT 2" + str(best_subjects[1].subject_title))
+        print("BEST SUBJECT 3" + str(best_subjects[2].subject_title))
+        print("BEST SUBJECTS BEST SUBJECTS BEST SUBJECTS" + str(best_subjects))
         return best_subjects
 
     def max_subject_average(self, subject_average_list):
         subject_marks = list()
         for subject_average in subject_average_list:
             subject_mark = subject_average.subject_average_mark
-            subject_marks.append(subject_mark)
+            if subject_mark not in subject_marks:
+                subject_marks.append(subject_mark)
         subject_marks.sort(reverse=True)
+        print("SUBJECT MARKS SUBJECT MARKS " + str(len(subject_marks)))
+        print("SUBJECT MARKS SUBJECT MARKS " + str(subject_marks))
         return subject_marks
 
     def best_subjects_in_career(self, student, careers):
@@ -319,15 +329,22 @@ class StudentsDetailView(DetailView):
                 print("FIRST CAREERS" + str(first_careers))
                 first_best_subjects_in_career = self.best_subjects_in_career(student, first_careers)
                 print("FIRST BEST SUBJECTS IN CAREER" + str(first_best_subjects_in_career))
+                print("FIRST BEST SUBJECT 1" + str(first_best_subjects_in_career[0]))
+                print("FIRST BEST SUBJECT 2" + str(first_best_subjects_in_career[1]))
                 second_careers = CareerField.objects.filter(career_personality_category=second_career_category)
                 print("SECOND CAREERS " + str(second_careers))
                 second_best_subjects_in_career = self.best_subjects_in_career(student, second_careers)
                 official_first_careers = CareerField.objects.filter(career_personality_category=first_career_category,
                                                                     dominant_subjects=first_best_subjects_in_career[0])
+                seconc_careers_in_best_category = CareerField.objects.filter(career_personality_category=first_career_category,
+                                                                             dominant_subjects=first_best_subjects_in_career[1])
                 official_second_careers = CareerField.objects.filter(career_personality_category=second_career_category,
                                                                      dominant_subjects=second_best_subjects_in_career[0])
+                list = seconc_careers_in_best_category.all()
+                self.request.session['list'] = list
                 print("SECOND BEST SUBJECTS IN CAREER" + str(second_best_subjects_in_career))
-                print("********************************" + str(official_first_careers))
+                print("********************************" + str(official_first_careers) + ("^^^^^^^^^^^^^^^")+ str(first_best_subjects_in_career[0].subject_title))
+                print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" + str(seconc_careers_in_best_category) + ("^^^^^^^^^^^^^^^") + str( first_best_subjects_in_career[1].subject_title))
                 context = super(StudentsDetailView, self).get_context_data(**kwargs)
                 cht_fruits = FruitPieChart(
 
@@ -388,16 +405,21 @@ class StudentsDetailView(DetailView):
                 print("FIRST CAREERS" + str(first_careers))
                 first_best_subjects_in_career = self.best_subjects_in_career(student, first_careers)
                 print("FIRST BEST SUBJECTS IN CAREER" + str(first_best_subjects_in_career))
+                print("FIRST BEST SUBJECT 1" + str(first_best_subjects_in_career[0]))
+                print("FIRST BEST SUBJECT 2" + str(first_best_subjects_in_career[1]))
                 second_careers = CareerField.objects.filter(career_personality_category=second_career_category)
                 print("SECOND CAREERS " + str(second_careers))
                 second_best_subjects_in_career = self.best_subjects_in_career(student, second_careers)
                 official_first_careers = CareerField.objects.filter(career_personality_category=first_career_category,
                                                                     dominant_subjects=first_best_subjects_in_career[0])
+                seconc_careers_in_best_category = CareerField.objects.filter(
+                    career_personality_category=first_career_category,
+                    dominant_subjects=first_best_subjects_in_career[1])
+                list = seconc_careers_in_best_category.all()
+                self.request.session['list'] = list
                 official_second_careers = CareerField.objects.filter(career_personality_category=second_career_category,
                                                                      dominant_subjects=second_best_subjects_in_career[
                                                                          0])
-                print("SECOND BEST SUBJECTS IN CAREER" + str(second_best_subjects_in_career))
-                print("********************************" + str(official_first_careers))
                 context = super(StudentsDetailView, self).get_context_data(**kwargs)
                 cht_fruits = FruitPieChart(
                     height=600,
@@ -414,7 +436,7 @@ class StudentsDetailView(DetailView):
                            'subjects': subjects, 'user': user, 'attendance_records': attendance_records,
                            'attendance_percentage': attendance_percentage,
                            'first_best': first_best, 'second_best': second_best, 'third_best': third_best,
-                           'first_careers': official_first_careers, 'second_careers': official_second_careers,
+                           'first_careers': official_first_careers, 'second_careers': official_second_careers, 'list': list,
                            'cht_fruits': cht_fruits}
                 return context
             else:
@@ -473,6 +495,16 @@ class StudentsDetailView(DetailView):
             career_category_ids[0] = first_career_category_id
             career_category_ids[1] = second_career_category_id
             return career_category_ids
+
+
+class SecondCareers(TemplateView):
+    template_name = 'classroom/students/second_careers.html'
+
+    def get_context_data(self, **kwargs):
+        second_careers = self.request.session['list']
+        context = {'second_careers': second_careers}
+
+        return context
 
 
 class StudentUpdateView(UpdateView):
